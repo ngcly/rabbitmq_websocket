@@ -1,0 +1,92 @@
+server:
+  port: 8081
+
+#JPA 配置:
+spring:
+  jpa:
+    database: MYSQL
+    # 是否打印sql
+    show-sql: true
+    generate-ddl: true
+    # 指定innodb 引擎
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    hibernate:
+      # 自动更新表结构
+      ddl-auto: update
+      naming:
+        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+  #数据源配置
+  datasource:
+    driverClassName: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/pay
+    username: root
+    password: 123456
+
+  #Rabbit-MQ 配置
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    publisher-confirms: true
+    publisher-returns: true
+    virtual-host: /
+    listener:
+      simple:
+        # 手动ACK 不开启自动ACK模式,目的是防止报错后未正确处理消息丢失 默认 为 none
+        acknowledge-mode: manual
+
+  ###模板配置
+  thymeleaf:
+    mode: HTML
+    cache: false
+    encoding: UTF-8
+
+  ##quartz配置
+  quartz:
+    properties:
+      org:
+        quartz:
+          scheduler:
+            #调度标识名 集群中每一个实例都必须使用相同的名称
+            instanceName: myScheduler
+            #ID设置为自动获取 每一个必须不同
+            instanceId: AUTO
+          jobStore:
+            #持久化方式配置
+            class: org.quartz.impl.jdbcjobstore.JobStoreTX
+            #持久化方式配置数据驱动，MySQL数据库
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+            #quartz表的前缀
+            tablePrefix: QRTZ_
+            # Cluster开启集群
+            isClustered: true
+            #分布式节点有效性检查时间间隔，单位：毫秒
+            clusterCheckinInterval: 10000
+            #使用自己的配置文件
+            useProperties: false
+          threadPool:
+            #线程池实现类
+            class: org.quartz.simpl.SimpleThreadPool
+            #线程数量
+            threadCount: 10
+            #线程优先级
+            threadPriority: 5
+            threadsInheritContextClassLoaderOfInitializingThread: true
+    #数据库方式
+    job-store-type: jdbc
+    #初始化表结构
+    jdbc:
+      initialize-schema: embedded
+
+  #redis 配置
+  redis:
+    host: localhost
+    password:
+    port: 6379
+
+  # 邮箱配置
+  mail:
+    host: smtp.qq.com
+    username: 531237716@qq.com
+    password: ddlsiwxcbhbtcahi
