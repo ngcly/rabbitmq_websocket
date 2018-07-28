@@ -3,29 +3,30 @@ package com.example.demo.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
+import org.springframework.session.Session;
+import org.springframework.session.web.socket.config.annotation.AbstractSessionWebSocketMessageBrokerConfigurer;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
-import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketTransportRegistration;
 
 
 @Configuration
-// 此注解开使用STOMP协议来传输基于消息代理的消息，此时可以在@Controller类中使用@MessageMapping
+// 此注解表示使用STOMP协议来传输基于消息代理的消息，此时可以在@Controller类中使用@MessageMapping
 @EnableWebSocketMessageBroker
-public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+//此处没有 implements WebSocketMessageBrokerConfigurer 而是继承下面这个类 目的是将websocket session交给spring session统一管理
+public class WebSocketConfig extends AbstractSessionWebSocketMessageBrokerConfigurer<Session> {
     @Autowired
     private MyHandShakeInterceptor myHandShakeInterceptor;
 
     @Override
-    public void configureMessageBroker(MessageBrokerRegistry config) {
-//        config.enableSimpleBroker("/topic","queue");
+    public void configureMessageBroker(MessageBrokerRegistry registry) {
         //客户端给服务端发消息的地址的前缀
-        config.setApplicationDestinationPrefixes("/app");
+        registry.setApplicationDestinationPrefixes("/app");
         /**
          * 配置消息代理
          * 使用RabbitMQ做为消息代理，替换默认的Simple Broker
          */
-        config
+        registry
                 // "STOMP broker relay"处理所有消息将消息发送到外部的消息代理
                 .enableStompBrokerRelay("/exchange","/topic","/queue","/amq/queue");
         /**
@@ -70,7 +71,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
 
     @Override
-    public void registerStompEndpoints(StompEndpointRegistry registry) {
+    public void configureStompEndpoints(StompEndpointRegistry registry) {
         /**
          * 注册 Stomp的端点
          *

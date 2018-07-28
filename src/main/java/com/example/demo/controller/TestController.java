@@ -1,9 +1,9 @@
 package com.example.demo.controller;
 
 import com.example.demo.config.RabbitConfig;
-import com.example.demo.dto.Greeting;
-import com.example.demo.dto.HelloMessage;
 import com.example.demo.dto.NewsDTO;
+import com.example.demo.util.RestCode;
+import com.example.demo.util.RestUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,13 +33,14 @@ public class TestController {
     private static final Logger log = LoggerFactory.getLogger(TestController.class);
 
     @GetMapping("/send")
-    public void defaultMessage() {
+    public ModelMap defaultMessage() {
         NewsDTO message = new NewsDTO();
         message.setId("1");
         message.setName("一起来学Spring Boot");
         //第一个参数是队列名称 第二个参数是 发送的具体内容
         rabbitTemplate.convertAndSend(RabbitConfig.DEFAULT_QUEUE, message);
         rabbitTemplate.convertAndSend(RabbitConfig.MANUAL_QUEUE, message);
+        return RestUtil.Success("发送成功");
     }
 
     @GetMapping("/later/{time}")
@@ -59,7 +60,7 @@ public class TestController {
     }
 
     @GetMapping("/sendEmail/{message}")
-    public String sendEmail(@PathVariable("message")String message){
+    public ModelMap sendEmail(@PathVariable("message")String message){
         //用于封装邮件信息的实例
         SimpleMailMessage smm=new SimpleMailMessage();
         //邮件发送者
@@ -72,9 +73,9 @@ public class TestController {
         smm.setTo("965315004@qq.com");
         try {
             jms.send(smm);
-            return "发送成功";
+            return RestUtil.Success("发送成功","");
         } catch (Exception e) {
-            return "发送失败///"+e.getMessage();
+            return RestUtil.Error(RestCode.UNAUTHZ);
         }
     }
 
