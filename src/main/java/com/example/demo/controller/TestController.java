@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @RestController
 @RequestMapping("/test")
@@ -36,15 +37,15 @@ public class TestController {
     public ModelMap defaultMessage() {
         NewsDTO message = new NewsDTO();
         message.setId("1");
-        message.setName("一起来学Spring Boot");
+        message.setName("消息队列信息内容");
         //第一个参数是队列名称 第二个参数是 发送的具体内容
         rabbitTemplate.convertAndSend(RabbitConfig.DEFAULT_QUEUE, message);
         rabbitTemplate.convertAndSend(RabbitConfig.MANUAL_QUEUE, message);
-        return RestUtil.Success("发送成功");
+        return RestUtil.Success("发送时间为："+LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
     }
 
     @GetMapping("/later/{time}")
-    public void laterSend(@PathVariable("time")int time){
+    public ModelMap laterSend(@PathVariable("time")int time){
         NewsDTO news = new NewsDTO();
         news.setId("2");
         news.setName("延迟队列信息");
@@ -56,7 +57,7 @@ public class TestController {
             message.getMessageProperties().setExpiration(time * 1000 + "");
             return message;
         });
-        log.info("[发送时间] - [{}]", LocalDateTime.now());
+        return RestUtil.Success("发送时间为："+LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
     }
 
     @GetMapping("/sendEmail/{message}")
