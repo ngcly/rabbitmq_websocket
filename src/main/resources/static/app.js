@@ -16,12 +16,11 @@ function setConnected(connected) {
 function connect() {
     var socket = new SockJS('/websocket-rabbitmq');
     stompClient = Stomp.over(socket);
-    // var headers={
-    //     username:'admin',
-    //     password:'admin'
-    // };
-    // stompClient.connect(headers, function (frame) {
-    stompClient.connect({}, function (frame) {
+    var headers={
+        'Auth-Token':'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNTMzMTc1MTM0LCJleHAiOjE1MzM3Nzk5MzR9.cCEX1CBRtoCOrNMHak_Jrlfj4_BzezE33wXaVVpxMHkAaMeFzuINHzFTo7M9q3zg8WjlFJjjcD9ue38Fn1cECQ'
+    };
+    stompClient.connect(headers, function (frame) {
+    // stompClient.connect({}, function (frame) {
         setConnected(true);
         stompClient.subscribe('/user/topic/greeting', function (greeting) {
             showGreeting(JSON.parse(greeting.body).content);

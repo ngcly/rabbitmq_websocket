@@ -4,6 +4,11 @@ server:
     session:
       timeout: 30m
 
+## App Properties
+app:
+  jwtSecret: JWTSuperSecretKey
+  jwtExpirationInMs: 604800000
+
 #JPA 配置:
 spring:
   jpa:
@@ -21,7 +26,7 @@ spring:
   #数据源配置
   datasource:
     driverClassName: com.mysql.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/pay
+    url: jdbc:mysql://localhost:3306/demo
     username: root
     password: 123456
 

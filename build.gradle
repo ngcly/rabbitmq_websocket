@@ -38,6 +38,10 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-mail')
 	compile('org.springframework.boot:spring-boot-starter-reactor-netty')
 	compile('org.springframework.session:spring-session-data-redis')
+	// https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt
+	compile group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
+	compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.9.6'
+
 
 	compile("org.webjars:webjars-locator-core")
 	compile("org.webjars:sockjs-client:1.0.2")
