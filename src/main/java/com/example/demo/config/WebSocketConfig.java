@@ -1,6 +1,5 @@
 package com.example.demo.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.session.Session;
@@ -15,8 +14,6 @@ import org.springframework.web.socket.config.annotation.WebSocketTransportRegist
 @EnableWebSocketMessageBroker
 //此处没有 implements WebSocketMessageBrokerConfigurer 而是继承下面这个类 目的是将websocket session交给spring session统一管理
 public class WebSocketConfig extends AbstractSessionWebSocketMessageBrokerConfigurer<Session> {
-    @Autowired
-    private MyHandShakeInterceptor myHandShakeInterceptor;
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
@@ -78,10 +75,7 @@ public class WebSocketConfig extends AbstractSessionWebSocketMessageBrokerConfig
          * addEndpoint：添加STOMP协议的端点。这个HTTP URL是供WebSocket或SockJS客户端访问的地址
          * withSockJS：指定端点使用SockJS协议
          */
-        registry.addEndpoint("/websocket-rabbitmq")
-                //添加自定义拦截器
-//                .addInterceptors(myHandShakeInterceptor)
-                .withSockJS();
+        registry.addEndpoint("/websocket-rabbitmq").withSockJS();
     }
 
     @Override

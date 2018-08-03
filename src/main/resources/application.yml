@@ -3,6 +3,15 @@ server:
   servlet:
     session:
       timeout: 30m
+  # 开启 gzip 压缩
+  compression:
+    enabled: true
+    mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json
+    # 超过 1KB 即开启压缩
+    min-response-size: 1024
+  # 开启 http2 支持 只在https下起作用
+  http2:
+    enabled: true
 
 #JPA 配置:
 spring:
@@ -100,3 +109,11 @@ spring:
     host: smtp.qq.com
     username: 531237716@qq.com
     password: ddlsiwxcbhbtcahi
+
+  # 开启浏览器静态资源缓存
+  resources:
+    cache:
+      cachecontrol:
+        max-age: 120s
+        must-revalidate: true
+        cache-public: true
