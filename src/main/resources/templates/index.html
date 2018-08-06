@@ -1,58 +1,39 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head>
-    <title>Hello WebSocket</title>
-    <link href="/webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <title>聊天室</title>
     <link href="/main.css" rel="stylesheet">
-    <script src="/webjars/jquery/jquery.min.js"></script>
-    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
-    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
-    <script src="/app.js"></script>
 </head>
 <body>
-<noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being
-    enabled. Please enable
-    Javascript and reload this page!</h2></noscript>
-<div id="main-content" class="container">
-    <div class="row">
-        <div class="col-md-6">
-            <form class="form-inline">
-                <div class="form-group">
-                    <label for="connect">WebSocket 连接:</label>
-                    <button id="connect" class="btn btn-default" type="submit">连接</button>
-                    <!--<button id="sub" class="btn btn-default" type="submit">订阅</button>-->
-                    <button id="disconnect" class="btn btn-default" type="submit" disabled="disabled">断开
-                    </button>
+<noscript>
+    <h2 style="color: #ff0000">似乎您的浏览器不支持 Javascript! Websocket 是基于 Javascript 运行的。请运行 Javascript 并重新加载当前页面！
+    </h2>
+</noscript>
+<span sec:authentication="name" id="current-user"></span>
+
+<div id="chat-page">
+    <div class="chat-container">
+        <div class="chat-header">
+            <h2>301聊天室</h2>
+        </div>
+        <ul id="messageArea">
+
+        </ul>
+        <form id="messageForm" name="messageForm" nameForm="messageForm">
+            <div class="form-group">
+                <div class="input-group clearfix">
+                    <input type="text" id="message" placeholder="@用户名+空格+信息 为私聊模式哟..." autocomplete="off" class="form-control"/>
+                    <button type="submit" class="primary">发送</button>
                 </div>
-            </form>
-        </div>
-        <div class="col-md-6">
-            <form class="form-inline">
-                <div class="form-group">
-                    <label for="name">接收用户:</label>
-                    <input type="text" id="name" class="form-control" placeholder="输入对方用户名...">
-                    <br/>
-                    <label for="content">发送信息:</label>
-                    <input type="text" id="content" class="form-control" placeholder="此处输入信息...">
-                </div>
-                <button id="sendUser" class="btn btn-default" type="submit">发送</button>
-                <button id="send" class="btn btn-default" type="submit">广播</button>
-            </form>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <table id="conversation" class="table table-striped">
-                <thead>
-                <tr>
-                    <th>内容</th>
-                </tr>
-                </thead>
-                <tbody id="greetings">
-                </tbody>
-            </table>
-        </div>
+            </div>
+        </form>
     </div>
 </div>
+
+<script src="/webjars/jquery/jquery.min.js"></script>
+<script src="/webjars/sockjs-client/sockjs.min.js"></script>
+<script src="/webjars/stomp-websocket/stomp.min.js"></script>
+<script src="/main.js"></script>
 </body>
 </html>

@@ -14,8 +14,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         auth
                 .inMemoryAuthentication()
                 .passwordEncoder(new BCryptPasswordEncoder())
-                .withUser("dsb").password(new BCryptPasswordEncoder().encode("123")).roles("USER")
+                .withUser("Cly").password(new BCryptPasswordEncoder().encode("123456")).roles("USER")
                 .and()
-                .withUser("dzz").password(new BCryptPasswordEncoder().encode("dzz")).roles("USER");
+                .withUser("Jack").password(new BCryptPasswordEncoder().encode("123456")).roles("USER")
+                .and()
+                .withUser("Tom").password(new BCryptPasswordEncoder().encode("123456")).roles("USER");
     }
 }
