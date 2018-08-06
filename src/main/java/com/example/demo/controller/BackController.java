@@ -1,14 +1,12 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.Greeting;
-import com.example.demo.dto.HelloMessage;
+import com.example.demo.dto.ChatMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.*;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.socket.config.WebSocketMessageBrokerStats;
-import org.springframework.web.util.HtmlUtils;
 
 import java.security.Principal;
 import java.util.Map;
@@ -25,8 +23,8 @@ public class BackController {
      */
     @MessageMapping("/hello")
     @SendTo("/topic/greeting")
-    public Greeting greeting(Principal principal, HelloMessage message) throws Exception {
-        return new Greeting("来自 "+principal.getName()+"："+ HtmlUtils.htmlEscape(message.getName()) + "!");
+    public ChatMessage greeting(Principal principal, ChatMessage chatMessage) throws Exception {
+        return new ChatMessage(ChatMessage.MessageType.CHAT,chatMessage.getContent(),principal.getName());
     }
 
     /**
@@ -36,8 +34,8 @@ public class BackController {
      */
     @MessageMapping("/user")
     @SendToUser("/topic/greeting")
-    public Greeting userGreeting(Principal principal, HelloMessage message) throws Exception {
-        return new Greeting("来自 "+principal.getName()+"："+ HtmlUtils.htmlEscape(message.getName()) + "!");
+    public ChatMessage userGreeting(Principal principal, ChatMessage chatMessage) throws Exception {
+        return new ChatMessage(ChatMessage.MessageType.CHAT,chatMessage.getContent(),principal.getName());
     }
 
     /**
@@ -45,8 +43,8 @@ public class BackController {
      */
     @MessageMapping("/user/{username}")
     @SendTo("/topic/greetings")
-    public Greeting greeting(@DestinationVariable String username, HelloMessage message, @Headers Map<String, Object> headers) throws Exception {
-        return new Greeting(headers.get("simpSessionId").toString()+ "---" + message.getName());
+    public ChatMessage greeting(@DestinationVariable String username, ChatMessage chatMessage, @Headers Map<String, Object> headers) throws Exception {
+        return new ChatMessage(ChatMessage.MessageType.CHAT,chatMessage.getContent()+headers.get("simpSessionId").toString(),username);
     }
 
     /**
@@ -54,19 +52,19 @@ public class BackController {
      * 给某人发信息
      */
     @MessageMapping("/toUser")
-    public void sendToUser(Principal principal, @Header("user")String user, HelloMessage message){
+    public void sendToUser(Principal principal, @Header("user")String user, ChatMessage chatMessage){
         //使用队列目的地 此处用topic不用queue 是因为一个session就会创建一个持久队列 有点浪费
-        messagingTemplate.convertAndSendToUser(user,"/topic/greeting",new Greeting(principal.getName()+": "+HtmlUtils.htmlEscape(message.getName())));
+        messagingTemplate.convertAndSendToUser(user,"/topic/greeting",new ChatMessage(ChatMessage.MessageType.CHAT,chatMessage.getContent(),principal.getName()));
     }
 
     /**
      * 群发信息
      */
     @MessageMapping("/toGroup")
-    public void sendToAll(Principal principal,@Header("group")String group,HelloMessage message){
+    public void sendToAll(Principal principal,@Header("group")String group,ChatMessage chatMessage){
         //获取统计websocket的一些信息
         String stateInfo = webSocketMessageBrokerStats.getWebSocketSessionStatsInfo();
-        messagingTemplate.convertAndSend("/topic/"+group,new Greeting(principal.getName()+": "+HtmlUtils.htmlEscape(message.getName())));
+        messagingTemplate.convertAndSend("/topic/"+group,new ChatMessage(ChatMessage.MessageType.CHAT,chatMessage.getContent(),principal.getName()));
     }
 
 }

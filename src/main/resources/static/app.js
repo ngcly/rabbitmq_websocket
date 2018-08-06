@@ -23,12 +23,21 @@ function connect() {
     // stompClient.connect(headers, function (frame) {
     stompClient.connect({}, function (frame) {
         setConnected(true);
-        stompClient.subscribe('/user/topic/greeting', function (greeting) {
-            showGreeting(JSON.parse(greeting.body).content);
+        stompClient.subscribe('/user/topic/greeting', function (data) {
+            var message = JSON.parse(data.body);
+            if(message.type==='JOIN') {
+
+            }else if(message.type==='LEAVE'){
+
+            }else{
+
+            }
+            showGreeting(message.sender+' '+message.content);
         });
         //订阅群消息 后面的greeting 应该用群名代替
-        stompClient.subscribe('/topic/greeting', function (greeting) {
-            showGreeting(JSON.parse(greeting.body).content);
+        stompClient.subscribe('/topic/greeting', function (data) {
+            var message = JSON.parse(data.body);
+            showGreeting(message.sender+' '+message.content);
         });
     });
 }
@@ -45,21 +54,30 @@ function disconnect() {
 var content;
 function sendGroup() {
     content = $("#content").val();
+    var chatMessage = {
+        content: content,
+        type: 'CHAT'
+    };
     // stompClient.send("/hello", {}, JSON.stringify({'name': $("#name").val()}));
-    stompClient.send("/app/toGroup", {'group':'greeting'}, JSON.stringify({'name': content}));
+    stompClient.send("/app/toGroup", {'group':'greeting'}, JSON.stringify(chatMessage));
     $("#content").val('');
 }
 function sendUser() {
     content = $("#content").val();
+    var chatMessage = {
+        content: content,
+        type: 'CHAT'
+    };
     // stompClient.send("/user", {}, JSON.stringify({'name': $("#name").val()}));
-    stompClient.send("/app/toUser", {'user': $("#name").val()}, JSON.stringify({'name': content}));
+    stompClient.send("/app/toUser", {'user': $("#name").val()}, JSON.stringify(chatMessage));
     showGreeting('我：'+content);
     $("#content").val('');
 }
 
 function subscribeUser() {
-    obj = stompClient.subscribe('/user/topic/greeting', function (greeting) {
-        showGreeting(JSON.parse(greeting.body).content);
+    obj = stompClient.subscribe('/user/topic/greeting', function (data) {
+        var message = JSON.parse(data.body);
+        showGreeting(message.sender+' '+message.content);
     });
 }
 

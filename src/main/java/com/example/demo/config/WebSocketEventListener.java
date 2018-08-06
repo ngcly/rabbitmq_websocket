@@ -1,7 +1,6 @@
 package com.example.demo.config;
 
-import com.example.demo.dto.Greeting;
-import com.example.demo.dto.HelloMessage;
+import com.example.demo.dto.ChatMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -10,7 +9,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
-import org.springframework.web.util.HtmlUtils;
 
 
 /**
@@ -30,8 +28,7 @@ public class WebSocketEventListener {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) headerAccessor.getHeader("simpUser");
         if(token.getName() != null) {
-            HelloMessage message = new HelloMessage(token.getName()+"：上线了");
-            messagingTemplate.convertAndSend("/topic/greeting",new Greeting(HtmlUtils.htmlEscape(message.getName())));
+            messagingTemplate.convertAndSend("/topic/greeting",new ChatMessage(ChatMessage.MessageType.JOIN,"上线了",token.getName()));
         }
     }
 
@@ -44,8 +41,7 @@ public class WebSocketEventListener {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) headerAccessor.getHeader("simpUser");
         if(token.getName() != null) {
-            HelloMessage message = new HelloMessage(token.getName()+"：下线了");
-            messagingTemplate.convertAndSend("/topic/greeting",new Greeting(HtmlUtils.htmlEscape(message.getName())));
+            messagingTemplate.convertAndSend("/topic/greeting",new ChatMessage(ChatMessage.MessageType.LEAVE,"下线了",token.getName()));
         }
     }
 }
