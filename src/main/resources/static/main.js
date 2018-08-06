@@ -20,12 +20,19 @@ function connect() {
     // };
     // stompClient.connect(headers, function (frame) {
     stompClient.connect({}, function (frame) {
-        stompClient.subscribe('/user/topic/greeting', onMessageReceived);
+        stompClient.subscribe('/user/topic/greeting', function (data) {
+            var message = JSON.parse(data.body);
+            showMessage(message);
+        });
         //订阅群消息 后面的greeting 应该用群名代替
-        stompClient.subscribe('/topic/greeting', onMessageReceived);
+        stompClient.subscribe('/topic/greeting', function (data) {
+            var message = JSON.parse(data.body);
+            showMessage(message);
+        });
     });
 }
 
+//匹配 @用户 正则
 var patt =/@(\S+)\s/;
 function sendMessage(event) {
     var messageContent = messageInput.value;
@@ -40,25 +47,7 @@ function sendMessage(event) {
             chatMessage.content=chatMessage.content.replace(patt,'');
             //发送给指定用户
             stompClient.send("/app/toUser", {'user': user[1]}, JSON.stringify(chatMessage));
-
-            var messageElement = document.createElement('li');
-            messageElement.classList.add('chat-message-me');
-            var avatarElement = document.createElement('i');
-            var avatarText = document.createTextNode(currentUser[0]);
-            avatarElement.appendChild(avatarText);
-            avatarElement.style['background-color'] = getAvatarColor(currentUser);
-            messageElement.appendChild(avatarElement);
-
-            var usernameElement = document.createElement('span');
-            var usernameText = document.createTextNode(currentUser);
-            usernameElement.appendChild(usernameText);
-            messageElement.appendChild(usernameElement);
-
-            var textElement = document.createElement('p');
-            var messageText = document.createTextNode(messageContent);
-            textElement.appendChild(messageText);
-            messageElement.appendChild(textElement);
-            messageArea.appendChild(messageElement);
+            showMessage(chatMessage);
         }else{
             //群发
             stompClient.send("/app/toGroup", {'group':'greeting'}, JSON.stringify(chatMessage));
@@ -68,10 +57,8 @@ function sendMessage(event) {
     event.preventDefault();
 }
 
-//接收信息
-function onMessageReceived(payload) {
-    var message = JSON.parse(payload.body);
-
+//将信息展示于页面
+function showMessage(message) {
     var messageElement = document.createElement('li');
 
     if(message.type === 'JOIN') {
@@ -131,6 +118,7 @@ function getAvatarColor(messageSender) {
 
 messageForm.addEventListener('submit', sendMessage, true);
 
+//初始化 连接 websocket
 $(function () {
     connect();
 });
