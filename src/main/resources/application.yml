@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: 8083
   servlet:
     session:
       timeout: 30m
@@ -30,7 +30,7 @@ spring:
   #数据源配置
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/demo?useSSL=false&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/collect_lottery?useSSL=false&serverTimezone=UTC
     username: root
     password: 123456
 
