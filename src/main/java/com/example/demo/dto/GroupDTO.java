@@ -1,6 +1,8 @@
 package com.example.demo.dto;
 
-public class GroupDTO {
+import java.io.Serializable;
+
+public class GroupDTO implements Serializable {
     private String id;
     private String groupname;
     private String avatar;
@@ -26,6 +28,15 @@ public class GroupDTO {
     }
 
     public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public GroupDTO() {
+    }
+
+    public GroupDTO(Long id, String groupname, String avatar) {
+        this.id = id.toString();
+        this.groupname = groupname;
         this.avatar = avatar;
     }
 }

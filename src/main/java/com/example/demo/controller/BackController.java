@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.socket.config.WebSocketMessageBrokerStats;
 
 import java.security.Principal;
+import java.util.Date;
 import java.util.Map;
 
 @Controller
@@ -24,7 +25,11 @@ public class BackController {
     @MessageMapping("/hello")
     @SendTo("/topic/greeting")
     public ChatMessage greeting(Principal principal, ChatMessage chatMessage) throws Exception {
-        return new ChatMessage(ChatMessage.MessageType.CHAT,chatMessage.getContent(),principal.getName());
+        ChatMessage message = new ChatMessage();
+        message.setUsername(principal.getName());
+        message.setContent(chatMessage.getContent());
+        message.setType("CHAT");
+        return message;
     }
 
     /**
@@ -35,7 +40,11 @@ public class BackController {
     @MessageMapping("/user")
     @SendToUser("/topic/greeting")
     public ChatMessage userGreeting(Principal principal, ChatMessage chatMessage) throws Exception {
-        return new ChatMessage(ChatMessage.MessageType.CHAT,chatMessage.getContent(),principal.getName());
+        ChatMessage message = new ChatMessage();
+        message.setUsername(principal.getName());
+        message.setContent(chatMessage.getContent());
+        message.setType("CHAT");
+        return message;
     }
 
     /**
@@ -44,7 +53,11 @@ public class BackController {
     @MessageMapping("/user/{username}")
     @SendTo("/topic/greetings")
     public ChatMessage greeting(@DestinationVariable String username, ChatMessage chatMessage, @Headers Map<String, Object> headers) throws Exception {
-        return new ChatMessage(ChatMessage.MessageType.CHAT,chatMessage.getContent()+headers.get("simpSessionId").toString(),username);
+        ChatMessage message = new ChatMessage();
+        message.setUsername(username);
+        message.setContent(chatMessage.getContent());
+        message.setType("CHAT");
+        return message;
     }
 
     /**
@@ -54,7 +67,14 @@ public class BackController {
     @MessageMapping("/toUser")
     public void sendToUser(Principal principal, @Header("user")String user, ChatMessage chatMessage){
         //使用队列目的地 此处用topic不用queue 是因为一个session就会创建一个持久队列 有点浪费
-        messagingTemplate.convertAndSendToUser(user,"/topic/greeting",new ChatMessage(ChatMessage.MessageType.CHAT,chatMessage.getContent(),principal.getName()));
+        ChatMessage message = new ChatMessage();
+        message.setUsername(principal.getName());
+        message.setAvatar(chatMessage.getAvatar());
+        message.setId(message.getId());
+        message.setContent(chatMessage.getContent());
+        message.setType("CHAT");
+        message.setTimestamp(new Date().toString());
+        messagingTemplate.convertAndSendToUser(user,"/topic/greeting",message);
     }
 
     /**
@@ -64,7 +84,11 @@ public class BackController {
     public void sendToAll(Principal principal,@Header("group")String group,ChatMessage chatMessage){
         //获取统计websocket的一些信息
         String stateInfo = webSocketMessageBrokerStats.getWebSocketSessionStatsInfo();
-        messagingTemplate.convertAndSend("/topic/"+group,new ChatMessage(ChatMessage.MessageType.CHAT,chatMessage.getContent(),principal.getName()));
+        ChatMessage message = new ChatMessage();
+        message.setUsername(principal.getName());
+        message.setContent(chatMessage.getContent());
+        message.setType("CHAT");
+        messagingTemplate.convertAndSend("/topic/"+group,message);
     }
 
 }

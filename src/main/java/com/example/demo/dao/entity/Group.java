@@ -3,7 +3,7 @@ package com.example.demo.dao.entity;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "group")
+@Table(name = "group_crowd")
 public class Group extends UserDateAudit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -13,7 +13,7 @@ public class Group extends UserDateAudit {
 
     private String avatar;
 
-    private String description;
+    private String groupDsc;
 
     public Long getId() {
         return id;
@@ -39,11 +39,11 @@ public class Group extends UserDateAudit {
         this.avatar = avatar;
     }
 
-    public String getDescription() {
-        return description;
+    public String getGroupDsc() {
+        return groupDsc;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setGroupDsc(String groupDsc) {
+        this.groupDsc = groupDsc;
     }
 }

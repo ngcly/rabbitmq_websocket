@@ -33,7 +33,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin()
                 //表单登录的 登录页
-                .loginPage("/login")
+//                .loginPage("/login")
 //                .successHandler(loginSuccessHandler())
 //                .defaultSuccessUrl("/")
                 //登录失败跳转页面

@@ -1,14 +1,19 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head>
-    <meta charset="utf-8">
-    <title>layui</title>
+    <title>聊天室</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link rel="stylesheet" href="/layui/css/layui.css"  media="all">
+    <link rel="stylesheet" href="/layui/css/layui.css" media="all">
 </head>
 <body>
+<noscript>
+    <h2 style="color: #ff0000">似乎您的浏览器不支持 Javascript! Websocket 是基于 Javascript 运行的。请运行 Javascript 并重新加载当前页面！
+    </h2>
+</noscript>
+<!--<span sec:authentication="name" id="current-user"></span>-->
 
 <blockquote class="layui-elem-quote">
     注意：LayIM 是基于 layui 的一款独立的付费组件，它是网页即时通讯 UI 解决方案，您购买授权后得到的是一套前端源代码，而服务端程序需自写。</blockquote>
@@ -42,11 +47,10 @@
     <button class="layui-btn site-demo-layim" data-type="mobile">移动端版本</button>
 </div>
 
-
-<script src="/layui/layui.js" charset="utf-8"></script>
+<script src="/webjars/jquery/jquery.min.js"></script>
 <script src="/webjars/sockjs-client/sockjs.min.js"></script>
 <script src="/webjars/stomp-websocket/stomp.min.js"></script>
-<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+<script src="/layui/layui.js"></script>
 <script>
     layui.use('layim', function(){
         var layim = layui.layim;
@@ -55,7 +59,8 @@
         stompClient = Stomp.over(socket);
         stompClient.connect({}, function (frame) {
             stompClient.subscribe('/user/topic/greeting', function (data) {
-                layim.getMessage(data.body)
+                var message = JSON.parse(data.body);
+                showMessage(message);
             });
             //订阅群消息 后面的greeting 应该用群名代替
             stompClient.subscribe('/topic/greeting', function (data) {
@@ -79,7 +84,7 @@
 
         //基础配置
         layim.config({
-            //初始化接口
+            //初始化接口 获取主面板列表信息
             init: {
                 url: '/user/chatInfo'
                 ,data: {}
@@ -89,11 +94,12 @@
                 url: '/user/groupMembers'
                 ,data: {}
             }
-
+            //上传图片接口，若不开启图片上传，剔除该项即可
             ,uploadImage: {
-                url: '' //（返回的数据格式见下文）
+                url: ''
                 ,type: '' //默认post
             }
+            //上传文件接口
             ,uploadFile: {
                 url: '' //（返回的数据格式见下文）
                 ,type: '' //默认post
@@ -130,14 +136,11 @@
         //监听在线状态的切换事件
         layim.on('online', function(status){
             layer.msg(status);
-            //此时，你就可以通过Ajax将这个状态值记录到数据库中了。
-            //服务端接口需自写。
         });
 
         //监听签名修改
         layim.on('sign', function(value){
             layer.msg(value);
-            //此时，你就可以通过Ajax将新的签名同步到数据库中了。
         });
         //监听自定义工具栏点击，以添加代码为例
         layim.on('tool(code)', function(insert){
@@ -146,7 +149,7 @@
                 ,formType: 2
                 ,shade: 0
             }, function(text, index){
-                layer.close(index);
+                layer.close(index2);
                 insert('[pre class=layui-code]' + text + '[/pre]'); //将内容插入到编辑器
             });
         });
@@ -154,54 +157,40 @@
         //监听layim建立就绪
         layim.on('ready', function(res){
             //console.log(res.mine);
-            layim.msgbox(1); //模拟消息盒子有新消息，实际使用时，一般是动态获得
+            layim.msgbox(5); //模拟消息盒子有新消息，实际使用时，一般是动态获得
         });
         //监听发送消息
         layim.on('sendMessage', function(data){
-            var mine = data.mine; //包含我的信息及发送的信息
-            var To = data.to; //对方的信息
+            var To = data.to;
             //console.log(data);
-
-            var chatMessage = {
-                username: mine.username //消息来源用户名
-                ,avatar: mine.avatar //消息来源用户头像
-                ,id: mine.id //消息的来源ID（如果是私聊，则是用户id，如果是群聊，则是群组id）
-                ,type: "friend" //聊天窗口来源类型，从发送消息传递的to里面获取
-                ,content: mine.content //消息内容
-                ,cid: 0 //消息id，可不传。除非你要对消息进行一些操作（如撤回）
-                ,mine: false //是否我发送的消息，如果为true，则会显示在右方
-                ,fromid: "100000" //消息的发送者id（比如群组中的某个消息发送者），可用于自动解决浏览器多窗口时的一些问题
-            };
-            //发送给指定用户
-            stompClient.send("/app/toUser", {'user': To.username}, JSON.stringify(chatMessage));
 
             if(To.type === 'friend'){
                 layim.setChatStatus('<span style="color:#FF5722;">对方正在输入。。。</span>');
             }
 
             //演示自动回复
-            // setTimeout(function(){
-            //     var obj = {};
-            //     if(To.type === 'group'){
-            //         obj = {
-            //             username: '模拟群员'+(Math.random()*100|0)
-            //             ,avatar: layui.cache.dir + 'images/face/'+ (Math.random()*72|0) + '.gif'
-            //             ,id: To.id
-            //             ,type: To.type
-            //             ,content: autoReplay[Math.random()*9|0]
-            //         }
-            //     } else {
-            //         obj = {
-            //             username: To.name
-            //             ,avatar: To.avatar
-            //             ,id: To.id
-            //             ,type: To.type
-            //             ,content: autoReplay[Math.random()*9|0]
-            //         }
-            //         layim.setChatStatus('<span style="color:#FF5722;">在线</span>');
-            //     }
-            //     layim.getMessage(obj);
-            // }, 1000);
+            setTimeout(function(){
+                var obj = {};
+                if(To.type === 'group'){
+                    obj = {
+                        username: '模拟群员'+(Math.random()*100|0)
+                        ,avatar: layui.cache.dir + 'images/face/'+ (Math.random()*72|0) + '.gif'
+                        ,id: To.id
+                        ,type: To.type
+                        ,content: autoReplay[Math.random()*9|0]
+                    }
+                } else {
+                    obj = {
+                        username: To.name
+                        ,avatar: To.avatar
+                        ,id: To.id
+                        ,type: To.type
+                        ,content: autoReplay[Math.random()*9|0]
+                    }
+                    layim.setChatStatus('<span style="color:#FF5722;">在线</span>');
+                }
+                layim.getMessage(obj);
+            }, 1000);
         });
         //监听查看群员
         layim.on('members', function(data){
@@ -293,7 +282,7 @@
                             icon: 1
                             ,shade: 0.5
                         }, function(){
-                            layer.close(index);
+                            layer.close(index2);
                         });
 
                         //通知对方
@@ -327,7 +316,7 @@
                             icon: 1
                             ,shade: 0.5
                         }, function(){
-                            layer.close(index);
+                            layer.close(index2);
                         });
 
                         //通知对方
@@ -370,7 +359,7 @@
                             ,sign: user.sign //好友签名
                         });
 
-                        layer.close(index);
+                        layer.close(index2);
                     }
                 });
             }
@@ -438,7 +427,7 @@
                     ,shadeClose: true
                     ,shade: 0.8
                     ,end: function(){
-                        layer.close(index + 2);
+                        layer.close(index2 + 2);
                     }
                 });
                 layer.photos({
@@ -460,7 +449,30 @@
             active[type] ? active[type].call(this) : '';
         });
     });
-</script>
 
+    //发送信息
+    function sendMessage(event) {
+        var messageContent = messageInput.value;
+        if(messageContent && stompClient) {
+            var chatMessage = {
+                sender: currentUser,
+                content: messageContent,
+                type: 'CHAT'
+            };
+            if(patt.test(messageContent)){
+                var user = patt.exec(messageContent);
+                chatMessage.content=chatMessage.content.replace(patt,'');
+                //发送给指定用户
+                stompClient.send("/app/toUser", {'user': user[1]}, JSON.stringify(chatMessage));
+                showMessage(chatMessage);
+            }else{
+                //群发
+                stompClient.send("/app/toGroup", {'group':'greeting'}, JSON.stringify(chatMessage));
+            }
+            messageInput.value = '';
+        }
+        event.preventDefault();
+    }
+</script>
 </body>
 </html>

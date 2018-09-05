@@ -30,7 +30,7 @@ spring:
   #数据源配置
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/collect_lottery?useSSL=false&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/test?useSSL=false&serverTimezone=UTC
     username: root
     password: 123456
 

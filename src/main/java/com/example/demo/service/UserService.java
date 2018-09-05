@@ -34,16 +34,26 @@ public class UserService {
      */
     public ModelMap userChatInfo(String username){
         User user = userRepository.findByUsername(username);
-        UserDTO userInfo = UserDTO.builder().id(user.getId().toString()).username(user.getUsername()).avatar(user.getAvatar()).sign(user.getSign()).status(user.getLineState()).build();
+        UserDTO userInfo = new UserDTO();
+        userInfo.setId(user.getId().toString());
+        userInfo.setUsername(user.getUsername());
+        userInfo.setAvatar(user.getAvatar());
+        userInfo.setSign(user.getSign());
+        userInfo.setStatus(user.getLineState());
         List<Object[]> friends = friendRepository.getFriends(user.getId());
-        Collection<GroupDTO> groups = groupRepository.getUserGroup(user.getId());
+        List<GroupDTO> groups = groupRepository.getUserGroup(user.getId());
         Map<String, List<Object[]>> collect = friends.stream().collect(Collectors.groupingBy(c -> c[0].toString()));
         List<UserDTO> list;
         List<FriendDTO> friendList = new ArrayList<>();
         for (Map.Entry<String, List<Object[]>> entry : collect.entrySet()) {
             list = new ArrayList<>();
             for(Object[] obj:entry.getValue()){
-                UserDTO friend = UserDTO.builder().id(obj[2].toString()).username(obj[3].toString()).avatar(obj[4].toString()).sign(obj[5].toString()).status(obj[6].toString()).build();
+                UserDTO friend = new UserDTO();
+                friend.setId(obj[2].toString());
+                friend.setUsername(obj[3].toString());
+                friend.setAvatar(String.valueOf(obj[4]));
+                friend.setSign(String.valueOf(obj[5]));
+                friend.setStatus(String.valueOf(obj[6]));
                 list.add(friend);
             }
             FriendDTO friendDTO = FriendDTO.builder().id(entry.getKey()).groupname(entry.getValue().get(0)[1].toString()).list(list).build();
