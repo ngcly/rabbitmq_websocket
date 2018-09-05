@@ -4,7 +4,7 @@ package com.example.demo.util;
  * 统一错误码
  */
 public enum RestCode {
-    SUCCESS(200, "操作成功"),
+    SUCCESS(0, "操作成功"),
     PARAM_ERROR(400, "参数错误"),
     UNAUTHORIZED(401 ,"未认证"),
     UNAUTHEN(4401, "未登录"),
