@@ -27,9 +27,9 @@ public class WebSocketEventListener {
     public void handleWebSocketConnectListener(SessionConnectedEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) headerAccessor.getHeader("simpUser");
-        if(token.getName() != null) {
-            messagingTemplate.convertAndSend("/topic/greeting",new ChatMessage(ChatMessage.MessageType.JOIN,"上线了",token.getName()));
-        }
+//        if(token.getName() != null) {
+//            messagingTemplate.convertAndSend("/topic/greeting",token.getName()+" 上线了");
+//        }
     }
 
     /**
@@ -40,8 +40,8 @@ public class WebSocketEventListener {
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) headerAccessor.getHeader("simpUser");
-        if(token.getName() != null) {
-            messagingTemplate.convertAndSend("/topic/greeting",new ChatMessage(ChatMessage.MessageType.LEAVE,"下线了",token.getName()));
-        }
+//        if(token.getName() != null) {
+//            messagingTemplate.convertAndSend("/topic/greeting",token.getName()+" 下线了");
+//        }
     }
 }

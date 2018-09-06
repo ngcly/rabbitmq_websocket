@@ -51,32 +51,6 @@
     layui.use('layim', function(){
         var layim = layui.layim;
 
-        var socket = new SockJS('/websocket-rabbitmq');
-        stompClient = Stomp.over(socket);
-        stompClient.connect({}, function (frame) {
-            stompClient.subscribe('/user/topic/greeting', function (data) {
-                layim.getMessage(data.body)
-            });
-            //订阅群消息 后面的greeting 应该用群名代替
-            stompClient.subscribe('/topic/greeting', function (data) {
-                var message = JSON.parse(data.body);
-                showMessage(message);
-            });
-        });
-
-        //演示自动回复
-        var autoReplay = [
-            '您好，我现在有事不在，一会再和您联系。',
-            '你没发错吧？face[微笑] ',
-            '洗澡中，请勿打扰，偷窥请购票，个体四十，团体八折，订票电话：一般人我不告诉他！face[哈哈] ',
-            '你好，我是主人的美女秘书，有什么事就跟我说吧，等他回来我会转告他的。face[心] face[心] face[心] ',
-            'face[威武] face[威武] face[威武] face[威武] ',
-            '<（@￣︶￣@）>',
-            '你要和我说话？你真的要和我说话？你确定自己想说吗？你一定非说不可吗？那你说吧，这是自动回复。',
-            'face[黑线]  你慢慢说，别急……',
-            '(*^__^*) face[嘻嘻] ，是贤心吗？'
-        ];
-
         //基础配置
         layim.config({
             //初始化接口
@@ -127,6 +101,28 @@
             ,chatLog: '/layim/html/chatlog.html' //聊天记录页面地址，若不开启，剔除该项即可
 
         });
+
+        var socket = new SockJS('/websocket-rabbitmq');
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, function (frame) {
+            stompClient.subscribe('/user/topic/greeting', function (res) {
+                res = JSON.parse(res.body);
+                layim.getMessage(res)
+            });
+            var groups = layim.cache().group;
+            var userid = layim.cache().mine.id;
+            groups.map(function(item){
+                //订阅群消息
+                stompClient.subscribe('/topic/'+item.id, function (data) {
+                    data = JSON.parse(data.body);
+                    //由于群订阅会给所有人发，所以这里不再重复加载自己的消息
+                    if(data.fromid!=userid){
+                        layim.getMessage(data)
+                    }
+                });
+            });
+        });
+
         //监听在线状态的切换事件
         layim.on('online', function(status){
             layer.msg(status);
@@ -154,7 +150,7 @@
         //监听layim建立就绪
         layim.on('ready', function(res){
             //console.log(res.mine);
-            layim.msgbox(1); //模拟消息盒子有新消息，实际使用时，一般是动态获得
+            // layim.msgbox(1); //模拟消息盒子有新消息，实际使用时，一般是动态获得
         });
         //监听发送消息
         layim.on('sendMessage', function(data){
@@ -162,46 +158,19 @@
             var To = data.to; //对方的信息
             //console.log(data);
 
-            var chatMessage = {
-                username: mine.username //消息来源用户名
-                ,avatar: mine.avatar //消息来源用户头像
-                ,id: mine.id //消息的来源ID（如果是私聊，则是用户id，如果是群聊，则是群组id）
-                ,type: "friend" //聊天窗口来源类型，从发送消息传递的to里面获取
-                ,content: mine.content //消息内容
-                ,cid: 0 //消息id，可不传。除非你要对消息进行一些操作（如撤回）
-                ,mine: false //是否我发送的消息，如果为true，则会显示在右方
-                ,fromid: "100000" //消息的发送者id（比如群组中的某个消息发送者），可用于自动解决浏览器多窗口时的一些问题
-            };
-            //发送给指定用户
-            stompClient.send("/app/toUser", {'user': To.username}, JSON.stringify(chatMessage));
-
-            if(To.type === 'friend'){
-                layim.setChatStatus('<span style="color:#FF5722;">对方正在输入。。。</span>');
-            }
-
-            //演示自动回复
-            // setTimeout(function(){
-            //     var obj = {};
-            //     if(To.type === 'group'){
-            //         obj = {
-            //             username: '模拟群员'+(Math.random()*100|0)
-            //             ,avatar: layui.cache.dir + 'images/face/'+ (Math.random()*72|0) + '.gif'
-            //             ,id: To.id
-            //             ,type: To.type
-            //             ,content: autoReplay[Math.random()*9|0]
-            //         }
-            //     } else {
-            //         obj = {
-            //             username: To.name
-            //             ,avatar: To.avatar
-            //             ,id: To.id
-            //             ,type: To.type
-            //             ,content: autoReplay[Math.random()*9|0]
-            //         }
-            //         layim.setChatStatus('<span style="color:#FF5722;">在线</span>');
-            //     }
-            //     layim.getMessage(obj);
-            // }, 1000);
+            //发送信息
+            stompClient.send("/app/toTarget", {}, JSON.stringify({
+                type: To.type
+                ,sendName: mine.username
+                ,sendId: mine.id
+                ,sendAvatar: mine.avatar
+                ,sendContent: mine.content
+                ,receiveId: To.id
+                ,receiveName:To.username
+            }));
+            // if(To.type === 'friend'){
+            //     layim.setChatStatus('<span style="color:#FF5722;">对方正在输入。。。</span>');
+            // }
         });
         //监听查看群员
         layim.on('members', function(data){
@@ -217,12 +186,12 @@
                 //layim.setChatStatus('<span style="color:#FF5722;">在线</span>');
             } else if(type === 'group'){
                 //模拟系统消息
-                layim.getMessage({
-                    system: true
-                    ,id: res.data.id
-                    ,type: "group"
-                    ,content: '模拟群员'+(Math.random()*100|0) + '加入群聊'
-                });
+                // layim.getMessage({
+                //     system: true
+                //     ,id: res.data.id
+                //     ,type: "group"
+                //     ,content: '模拟群员'+(Math.random()*100|0) + '加入群聊'
+                // });
             }
         });
 

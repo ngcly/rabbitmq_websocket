@@ -6,20 +6,21 @@ import lombok.Setter;
 
 import java.io.Serializable;
 
+@Builder
 @Getter
 @Setter
 public class UserDTO implements Serializable {
-    private String id;
-    private String username;
-    private String avatar;
-    private String sign;
-    private String status;
+    private String id;       //由于layIm 的固定json格式 此处用唯一的用户名代替 对应数据库的用户名
+    private String username; //此处用昵称代替 对应数据库的昵称名字
+    private String avatar;   //头像
+    private String sign;     //签名
+    private String status;   //状态
 
     public UserDTO() {
     }
 
-    public UserDTO(Long id, String username, String avatar, String sign, String status) {
-        this.id = id.toString();
+    public UserDTO(String id, String username, String avatar, String sign, String status) {
+        this.id = id;
         this.username = username;
         this.avatar = avatar;
         this.sign = sign;

@@ -34,12 +34,13 @@ public class UserService {
      */
     public ModelMap userChatInfo(String username){
         User user = userRepository.findByUsername(username);
-        UserDTO userInfo = new UserDTO();
-        userInfo.setId(user.getId().toString());
-        userInfo.setUsername(user.getUsername());
-        userInfo.setAvatar(user.getAvatar());
-        userInfo.setSign(user.getSign());
-        userInfo.setStatus(user.getLineState());
+        UserDTO userInfo = UserDTO.builder()
+                .id(user.getUsername())
+                .username(user.getName())
+                .avatar(user.getAvatar())
+                .sign(user.getSign())
+                .status(user.getLineState())
+                .build();
         List<Object[]> friends = friendRepository.getFriends(user.getId());
         List<GroupDTO> groups = groupRepository.getUserGroup(user.getId());
         Map<String, List<Object[]>> collect = friends.stream().collect(Collectors.groupingBy(c -> c[0].toString()));
@@ -48,12 +49,13 @@ public class UserService {
         for (Map.Entry<String, List<Object[]>> entry : collect.entrySet()) {
             list = new ArrayList<>();
             for(Object[] obj:entry.getValue()){
-                UserDTO friend = new UserDTO();
-                friend.setId(obj[2].toString());
-                friend.setUsername(obj[3].toString());
-                friend.setAvatar(String.valueOf(obj[4]));
-                friend.setSign(String.valueOf(obj[5]));
-                friend.setStatus(String.valueOf(obj[6]));
+                UserDTO friend = UserDTO.builder()
+                        .id(obj[2].toString())
+                        .username(obj[3].toString())
+                        .avatar(String.valueOf(obj[4]))
+                        .sign(String.valueOf(obj[5]))
+                        .status(String.valueOf(obj[6]))
+                        .build();
                 list.add(friend);
             }
             FriendDTO friendDTO = FriendDTO.builder().id(entry.getKey()).groupname(entry.getValue().get(0)[1].toString()).list(list).build();

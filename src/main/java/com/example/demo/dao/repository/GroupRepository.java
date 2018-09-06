@@ -23,7 +23,7 @@ public interface GroupRepository extends JpaRepository<Group,Long> {
      * 获取当前群内成员
      * @param groupId
      */
-    @Query("select new com.example.demo.dto.UserDTO(t2.id,t2.username,t2.avatar,t2.sign,t2.lineState) " +
+    @Query("select new com.example.demo.dto.UserDTO(t2.username,t2.name,t2.avatar,t2.sign,t2.lineState) " +
             "from UserGroup t1,User t2 where t1.groupId=:groupId and t1.userId=t2.id")
     List<UserDTO> getGroupUsers(@Param("groupId")Long groupId);
 }
