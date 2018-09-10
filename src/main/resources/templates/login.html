@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>登录</title>
+    <meta name="renderer" content="webkit" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <link rel="stylesheet" href="/layui/css/layui.css" media="all" />
+    <style>
+        .login{ width:260px;padding: 20px;background-color:rgba(0,0,0,0.5);border-radius: 4px;position:absolute;left: 50%;top: 50%; margin:-150px 0 0 -150px;z-index:99;}
+        .login h1{ text-align:center; color:#fff; font-size:24px; margin-bottom:20px; }
+    </style>
+</head>
+<body style="background: url('/img/bg.jpg')">
+<div class="login">
+    <h1>后台管理登录</h1>
+    <form class="layui-form" action="/login" method="post">
+        <div class="layui-form-item">
+            <input class="layui-input" id="username" name="username" placeholder="请输入用户名" lay-verify="required" type="text" autocomplete="off" />
+        </div>
+        <div class="layui-form-item">
+            <input class="layui-input" id="password" name="password" placeholder="请输入密码" lay-verify="required" type="password" autocomplete="off" />
+        </div>
+        <div class="layui-form-item">
+            <button class="layui-btn layui-block" lay-submit="" lay-filter="login" style="width: 100%">登录</button>
+        </div>
+    </form>
+</div>
+<script type="text/javascript" src="/layui/layui.js"></script>
+<script>
+    layui.use(['element','form','layer'],function(){
+        $ = layui.jquery;
+        var form = layui.form,
+            layer = layui.layer;
+        form.on('submit(login)', function (data) {
+            var index = layer.load(0);
+            var headers = {};
+            headers['X-CSRF-TOKEN'] = "[[${_csrf.token}]]";
+            $.ajax({
+                url:data.form.action,
+                type:data.form.method,
+                headers: headers,
+                data:data.field,//这是是要提交的参数
+                dataType:'json',
+                success:function(data){
+                    if(data.code == 200){
+                        layer.close(index);
+                        location.href="/";
+                    }else{
+                        layer.close(index);
+                        layer.msg(data.msg,{time:1000});
+                    }
+                }
+            });
+            return false;
+        });
+    });
+</script>
+</body>
+</html>

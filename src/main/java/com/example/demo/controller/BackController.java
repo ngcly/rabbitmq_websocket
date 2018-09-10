@@ -1,14 +1,19 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.ChatMessage;
+import com.example.demo.dto.MessageDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.*;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.socket.config.WebSocketMessageBrokerStats;
 
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.Map;
 
 @Controller
@@ -19,25 +24,45 @@ public class BackController {
     WebSocketMessageBrokerStats webSocketMessageBrokerStats;
 
     /**
+     * 登录页面
+     *
+     * @return login.html
+     */
+    @RequestMapping("/login")
+    public String login(@RequestParam(required = false)String error, Model model) {
+        model.addAttribute("error",error);
+        return "login";
+    }
+
+    @RequestMapping("/msgbox")
+    public String msgbox(){
+        return "msgbox";
+    }
+
+    /**
      * 根据信息内容自动判断群发或者个人
      */
     @MessageMapping("/toTarget")
     public void sendToTarget(Principal principal, ModelMap modelMap){
-        ChatMessage message = new ChatMessage();
-        message.setUsername(modelMap.get("sendName").toString());
-        message.setAvatar(modelMap.get("sendAvatar").toString());
-        message.setType(modelMap.get("type").toString());
-        message.setContent(modelMap.get("sendContent").toString());
-        message.setFromid(modelMap.get("sendId").toString());
-//        message.setTimestamp(String.valueOf(new Date().getTime()));
-       if("friend".equals(message.getType())){
+        Map<String,String> map = new HashMap<>();
+        if("chatMessage".equals(modelMap.get("emit"))){
+            map.put("username",modelMap.get("sendName").toString());
+            map.put("avatar",modelMap.get("sendAvatar").toString());
+            map.put("type",modelMap.get("type").toString());
+            map.put("content",modelMap.get("sendContent").toString());
+            map.put("fromid",modelMap.get("sendId").toString());
+        }
+        MessageDTO message;
+       if("friend".equals(map.get("type"))){
            //发送人 此处为发送人Id
-           message.setId(modelMap.get("sendId").toString());
+           map.put("id",modelMap.get("sendId").toString());
+           message = MessageDTO.builder().emit(MessageDTO.MessageType.chatMessage).data(map).build();
            messagingTemplate.convertAndSendToUser(modelMap.get("receiveId").toString(),"/topic/greeting",message);
        }else{
            //发送群 此处Id 为 群ID
-           message.setId(modelMap.get("receiveId").toString());
-           messagingTemplate.convertAndSend("/topic/"+message.getId(),message);
+           map.put("id",modelMap.get("receiveId").toString());
+           message = MessageDTO.builder().emit(MessageDTO.MessageType.chatMessage).data(map).build();
+           messagingTemplate.convertAndSend("/topic/"+map.get("id"),message);
        }
     }
 

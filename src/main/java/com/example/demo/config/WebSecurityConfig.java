@@ -33,15 +33,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin()
                 //表单登录的 登录页
-//                .loginPage("/login")
-//                .successHandler(loginSuccessHandler())
-//                .defaultSuccessUrl("/")
+                .loginPage("/login")
+                .successHandler(loginSuccessHandler())
                 //登录失败跳转页面
-                .failureUrl("/login?error=true")
+                .failureHandler(loginFailureHandler())
                 .permitAll()
-                .and()
-                //开启cookie保存用户数据
-                .rememberMe()
                 .and()
                 .logout()
                 //默认注销行为为logout，可以通过下面的方式来修改
@@ -66,5 +62,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(4);
+    }
+
+    @Bean
+    public LoginSuccessHandler loginSuccessHandler(){
+        return new LoginSuccessHandler();
+    }
+
+    @Bean
+    public LoginFailureHandler loginFailureHandler(){
+        return new LoginFailureHandler();
     }
 }
