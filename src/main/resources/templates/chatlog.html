@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <title>聊天记录</title>
 
-<link rel="stylesheet" href="http://local.res.layui.com/layui/src/css/layui.css">
+<link rel="stylesheet" href="/layui/css/layui.css">
 <style>
 body .layim-chat-main{height: auto;}
 </style>
@@ -37,7 +37,7 @@ body .layim-chat-main{height: auto;}
 -->
 
 
-<script src="http://local.res.layui.com/layui/src/layui.js"></script>
+<script src="/layui/layui.js"></script>
 <script>
 layui.use(['layim', 'laypage'], function(){
   var layim = layui.layim
@@ -83,7 +83,7 @@ layui.use(['layim', 'laypage'], function(){
     }]
   }
   
-  //console.log(param)
+  console.log(param)
   
   var html = laytpl(LAY_tpl.value).render({
     data: res.data

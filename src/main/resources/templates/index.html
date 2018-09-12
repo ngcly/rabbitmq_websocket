@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="stylesheet" href="/layui/css/layui.css"  media="all">
+    <link rel="stylesheet" href="/contextMenu.css">
 </head>
 <body>
 
@@ -46,12 +47,14 @@
 
 
 <script src="/layui/layui.js" charset="utf-8"></script>
+<script src="contextMenu.js"></script>
 <script src="/webjars/sockjs-client/sockjs.min.js"></script>
 <script src="/webjars/stomp-websocket/stomp.min.js"></script>
 <!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
 <script>
     layui.use('layim', function(){
         var layim = layui.layim;
+        var contextMenu = layui.contextMenu;
 
         //基础配置
         layim.config({
@@ -99,8 +102,8 @@
             //,voice: false //声音提醒，默认开启，声音文件为：default.mp3
 
             ,msgbox: '/msgbox' //消息盒子页面地址，若不开启，剔除该项即可
-            ,find: '/layim/html/find.html' //发现页面地址，若不开启，剔除该项即可
-            ,chatLog: '/layim/html/chatlog.html' //聊天记录页面地址，若不开启，剔除该项即可
+            ,find: '/find' //发现页面地址，若不开启，剔除该项即可
+            ,chatLog: '/chatlog' //聊天记录页面地址，若不开启，剔除该项即可
 
         });
 
@@ -130,15 +133,14 @@
 
         //监听在线状态的切换事件
         layim.on('online', function(status){
-            layer.msg(status);
-            //此时，你就可以通过Ajax将这个状态值记录到数据库中了。
-            //服务端接口需自写。
+            $.get("/user/changeOnline/"+status);
         });
 
         //监听签名修改
         layim.on('sign', function(value){
-            layer.msg(value);
-            //此时，你就可以通过Ajax将新的签名同步到数据库中了。
+            var headers = {};
+            headers['X-CSRF-TOKEN'] = "[[${_csrf.token}]]";
+            $.ajax({url:"/user/updateSign",type:'POST', contentType:'application/json',headers: headers,data:JSON.stringify({"sign":value})});
         });
         //监听自定义工具栏点击，以添加代码为例
         layim.on('tool(code)', function(insert){
@@ -156,6 +158,64 @@
         layim.on('ready', function(res){
             //console.log(res.mine);
             // layim.msgbox(1); //模拟消息盒子有新消息，实际使用时，一般是动态获得
+            //构建右键菜单
+            $(".layim-list-friend >li > ul > li").contextMenu({
+                width: 140, // width
+                itemHeight: 30, // 菜单项height
+                bgColor: "#fff", // 背景颜色
+                color: "#333", // 字体颜色
+                fontSize: 15, // 字体大小
+                hoverBgColor: "#009bdd", // hover背景颜色
+                hoverColor: "#fff", // hover背景颜色
+                target: function(ele) { // 当前元素
+                    $(".ul-context-menu").attr("data-id",ele[0].id);
+                    $(".ul-context-menu").attr("data-name",ele.find("span").html());
+                    $(".ul-context-menu").attr("data-img",ele.find("img").attr('src'));
+                },
+                menu: [
+                    { // 菜单项
+                        text: "发送消息",
+                        icon: "",
+                        callback: function(ele) {
+                            var othis = ele.parent(),
+                                friend_id = othis[0].dataset.id.replace(/^layim-friend/g, ''),
+                                friend_name = othis[0].dataset.name,
+                                friend_avatar = othis[0].dataset.img;
+                            conf.layim.chat({
+                                name: friend_name
+                                ,type: 'friend'
+                                ,avatar: friend_avatar
+                                ,id: friend_id
+                            });
+                        }
+                    },
+                    {
+                        text: "查看资料",
+                        icon: "",
+                        callback: function(ele) {
+                            var othis = ele.parent(),friend_id = othis[0].dataset.id.replace(/^layim-friend/g, '');
+                            im.getInformation({
+                                id: friend_id,
+                                type:'friend'
+                            });
+                        }
+                    },
+                    {
+                        text: "聊天记录",
+                        icon: "",
+                        callback: function(ele) {
+                            var othis = ele.parent(),
+                                friend_id = othis[0].dataset.id.replace(/^layim-friend/g, ''),
+                                friend_name = othis[0].dataset.name;
+                            im.getChatLog({
+                                name: friend_name,
+                                id: friend_id,
+                                type:'friend'
+                            });
+                        }
+                    }
+                ]
+            });
         });
         //监听发送消息
         layim.on('sendMessage', function(data){
@@ -186,7 +246,7 @@
         //监听聊天窗口的切换
         layim.on('chatChange', function(res){
             var type = res.data.type;
-            console.log(res.data.id)
+            console.log(res.data.id);
             if(type === 'friend'){
                 //模拟标注好友状态
                 //layim.setChatStatus('<span style="color:#FF5722;">在线</span>');

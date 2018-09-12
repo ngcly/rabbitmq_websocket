@@ -34,9 +34,28 @@ public class BackController {
         return "login";
     }
 
+    /**
+     * 消息盒子页面
+     */
     @RequestMapping("/msgbox")
     public String msgbox(){
         return "msgbox";
+    }
+
+    /**
+     * 聊天记录页面
+     */
+    @RequestMapping("/chatlog")
+    public String chatlog(){
+        return "chatlog";
+    }
+
+    /**
+     * 发现页面
+     */
+    @RequestMapping("/find")
+    public String find(){
+        return "find";
     }
 
     /**

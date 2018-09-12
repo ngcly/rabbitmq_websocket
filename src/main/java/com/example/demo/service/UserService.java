@@ -78,4 +78,24 @@ public class UserService {
         map.put("list",userDTOS);
         return RestUtil.Success(map);
     }
+
+    /**
+     * 更新用户在线状态
+     */
+    public ModelMap updateStatus(String username,String state){
+        User user = userRepository.findByUsername(username);
+        user.setLineState(state);
+        userRepository.save(user);
+        return RestUtil.Success();
+    }
+
+    /**
+     * 更新签名
+     */
+    public ModelMap updateSign(String username,String sign){
+        User user = userRepository.findByUsername(username);
+        user.setSign(sign);
+        userRepository.save(user);
+        return RestUtil.Success();
+    }
 }
