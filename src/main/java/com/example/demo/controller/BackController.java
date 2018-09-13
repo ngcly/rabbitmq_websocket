@@ -1,7 +1,10 @@
 package com.example.demo.controller;
 
+import com.example.demo.config.RabbitConfig;
 import com.example.demo.dto.ChatMessage;
 import com.example.demo.dto.MessageDTO;
+import com.example.demo.dto.MsgDTO;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.*;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -22,6 +25,8 @@ public class BackController {
     private SimpMessagingTemplate messagingTemplate;
     @Autowired
     WebSocketMessageBrokerStats webSocketMessageBrokerStats;
+    @Autowired
+    RabbitTemplate rabbitTemplate;
 
     /**
      * 登录页面
@@ -72,17 +77,31 @@ public class BackController {
             map.put("fromid",modelMap.get("sendId").toString());
         }
         MessageDTO message;
+        MsgDTO msg;
        if("friend".equals(map.get("type"))){
            //发送人 此处为发送人Id
            map.put("id",modelMap.get("sendId").toString());
            message = MessageDTO.builder().emit(MessageDTO.MessageType.chatMessage).data(map).build();
            messagingTemplate.convertAndSendToUser(modelMap.get("receiveId").toString(),"/topic/greeting",message);
+           msg = MsgDTO.builder()
+                   .sender(map.get("username"))
+                   .receiver(modelMap.get("receiveId").toString())
+                   .content(map.get("content"))
+                   .type("friend")
+                   .build();
        }else{
            //发送群 此处Id 为 群ID
            map.put("id",modelMap.get("receiveId").toString());
            message = MessageDTO.builder().emit(MessageDTO.MessageType.chatMessage).data(map).build();
            messagingTemplate.convertAndSend("/topic/"+map.get("id"),message);
+           msg = MsgDTO.builder()
+                   .sender(map.get("username"))
+                   .receiver(modelMap.get("receiveId").toString())
+                   .content(map.get("content"))
+                   .type("group")
+                   .build();
        }
+        rabbitTemplate.convertAndSend(RabbitConfig.CHAT_QUEUE, msg);
     }
 
 }

@@ -18,6 +18,7 @@ import java.util.Map;
 public class RabbitConfig {
     public static final String DEFAULT_QUEUE = "default";
     public static final String MANUAL_QUEUE = "manual";
+    public static final String CHAT_QUEUE = "chat";
 
     private static final Logger log = LoggerFactory.getLogger(RabbitConfig.class);
 
@@ -32,6 +33,11 @@ public class RabbitConfig {
     public Queue manualBookQueue() {
         // 第一个是 QUEUE 的名字,第二个是消息是否需要持久化处理
         return new Queue(MANUAL_QUEUE, true);
+    }
+
+    @Bean
+    public Queue chatQueue() {
+        return new Queue(CHAT_QUEUE, true);
     }
 
     /**
@@ -50,7 +56,6 @@ public class RabbitConfig {
         connectionFactory.setPublisherReturns(true);
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
         rabbitTemplate.setMandatory(true);
-        rabbitTemplate.setConfirmCallback((correlationData, ack, cause) -> log.info("消息发送成功:correlationData({}),ack({}),cause({})", correlationData, ack, cause));
         rabbitTemplate.setReturnCallback((message, replyCode, replyText, exchange, routingKey) -> log.info("消息丢失:exchange({}),route({}),replyCode({}),replyText({}),message:{}", exchange, routingKey, replyCode, replyText, message));
         return rabbitTemplate;
     }

@@ -49,4 +49,12 @@ public class UserController {
     public ModelMap updateSign(Principal principal,@RequestBody ModelMap map){
         return userService.updateSign(principal.getName(),map.get("sign").toString());
     }
+
+    /**
+     * 获取聊天信息
+     */
+    @GetMapping("/chatList/{id}/{type}")
+    public ModelMap getChatMsg(Principal principal,@PathVariable("id")String receiver,@PathVariable("type")String msgType){
+        return userService.getChatMsg(principal.getName(),receiver,msgType);
+    }
 }

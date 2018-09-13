@@ -1,6 +1,8 @@
 package com.example.demo.service;
 
+import com.example.demo.dao.entity.ChatMsg;
 import com.example.demo.dao.entity.User;
+import com.example.demo.dao.repository.ChatMsgRepository;
 import com.example.demo.dao.repository.FriendRepository;
 import com.example.demo.dao.repository.GroupRepository;
 import com.example.demo.dao.repository.UserRepository;
@@ -23,6 +25,8 @@ public class UserService {
     FriendRepository friendRepository;
     @Autowired
     GroupRepository groupRepository;
+    @Autowired
+    ChatMsgRepository chatMsgRepository;
 
     public Optional<User> findUserByName(String username){
         return Optional.ofNullable(userRepository.findByUsername(username));
@@ -41,7 +45,7 @@ public class UserService {
                 .sign(user.getSign())
                 .status(user.getLineState())
                 .build();
-        List<Object[]> friends = friendRepository.getFriends(user.getId());
+        List<Object[]> friends = friendRepository.getMyFriends(user.getId());
         List<GroupDTO> groups = groupRepository.getUserGroup(user.getId());
         Map<String, List<Object[]>> collect = friends.stream().collect(Collectors.groupingBy(c -> c[0].toString()));
         List<UserDTO> list;
@@ -50,8 +54,8 @@ public class UserService {
             list = new ArrayList<>();
             for(Object[] obj:entry.getValue()){
                 UserDTO friend = UserDTO.builder()
-                        .id(obj[2].toString())
-                        .username(obj[3].toString())
+                        .username(obj[2].toString())
+                        .id(obj[3].toString())
                         .avatar(String.valueOf(obj[4]))
                         .sign(String.valueOf(obj[5]))
                         .status(String.valueOf(obj[6]))
@@ -97,5 +101,18 @@ public class UserService {
         user.setSign(sign);
         userRepository.save(user);
         return RestUtil.Success();
+    }
+
+    /**
+     * 获取聊天信息
+     */
+    public ModelMap getChatMsg(String sender,String receiver,String msgType){
+        List<ChatMsg> chatMsgList;
+        if("friend".equals(msgType)){
+            chatMsgList = chatMsgRepository.getFriendChatList(sender,receiver);
+        }else{
+            chatMsgList = chatMsgRepository.getGroupChatList(receiver);
+        }
+        return RestUtil.Success(chatMsgList);
     }
 }

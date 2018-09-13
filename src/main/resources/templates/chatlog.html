@@ -84,7 +84,9 @@ layui.use(['layim', 'laypage'], function(){
   }
   
   console.log(param)
-  
+  $.get('/user/chatList/'+param.id+'/'+param.type,function(result){
+      res = result;
+  });
   var html = laytpl(LAY_tpl.value).render({
     data: res.data
   });

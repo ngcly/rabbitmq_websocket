@@ -112,7 +112,6 @@
         stompClient.connect({}, function (frame) {
             stompClient.subscribe('/user/topic/greeting', function (res) {
                 res = JSON.parse(res.body);
-                console.log(res);
                 if(res.emit === 'chatMessage'){
                     layim.getMessage(res.data);
                 }

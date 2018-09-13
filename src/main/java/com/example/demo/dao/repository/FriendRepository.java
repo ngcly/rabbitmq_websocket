@@ -13,8 +13,8 @@ public interface FriendRepository extends JpaRepository<Friend, Long> {
     /**
      * 获取好友列表
      */
-    @Query(value = "select t1.shipId,t1.shipName,t2.username,t2.name,t2.avatar,t2.sign,t2.lineState " +
-            "from Friend t1,User t2 where t1.userId=:userId and t1.friendId=t2.id ")
-    List<Object[]> getFriends(@Param("userId")Long userId);
-
+    @Query(value = "select t2.id,t2.groupName,t3.nickName,t1.username,t1.avatar,t1.sign,t1.lineState " +
+            "from User t1,Subgroup t2,Friend t3 where t2.userId=:userId and t2.id = t3.subgroupId " +
+            "and t3.friendId = t1.id order by t2.orderNum")
+    List<Object[]> getMyFriends(@Param("userId")Long userId);
 }

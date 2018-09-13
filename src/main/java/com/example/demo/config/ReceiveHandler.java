@@ -1,11 +1,14 @@
 package com.example.demo.config;
 
+import com.example.demo.dto.MsgDTO;
 import com.example.demo.dto.NewsDTO;
+import com.example.demo.service.MessageService;
 import com.rabbitmq.client.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -16,6 +19,9 @@ import java.time.LocalDateTime;
  */
 @Component
 public class ReceiveHandler {
+    @Autowired
+    MessageService messageService;
+
     private static final Logger log = LoggerFactory.getLogger(ReceiveHandler.class);
 
     /**
@@ -73,4 +79,14 @@ public class ReceiveHandler {
         }
     }
 
+
+    @RabbitListener(queues = {RabbitConfig.CHAT_QUEUE})
+    public void listenerManualAck(MsgDTO msg, Message message, Channel channel) {
+        try {
+            messageService.saveChatMsg(msg);
+            channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+        } catch (IOException e) {
+           e.printStackTrace();
+        }
+    }
 }
