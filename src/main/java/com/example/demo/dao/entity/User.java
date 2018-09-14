@@ -10,24 +10,19 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "user", uniqueConstraints = {
         @UniqueConstraint(columnNames = {
-                "username"
-        }),
-        @UniqueConstraint(columnNames = {
                 "email"
         })
 })
 public class User extends DateAudit {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @NotBlank
-    @Size(max = 40)
-    private String name;
-
     @NotBlank
     @Size(max = 15)
     private String username;
+
+    @NotBlank
+    @Size(max = 40)
+    private String nickName;
 
     @NaturalId
     @NotBlank
@@ -39,11 +34,16 @@ public class User extends DateAudit {
     @Size(max = 100)
     private String password;
 
-    private Byte gender;
+    private String realName;
 
-    private String sign;
+    @Column(columnDefinition="enum('男','女')")
+    private String gender;
+
+    private String signature;
 
     private String avatar;
+
+    private String telPhone;
 
     private String lineState;
 
@@ -51,20 +51,13 @@ public class User extends DateAudit {
 
     }
 
-    public User(String name, String username, String email, String password) {
-        this.name = name;
+    public User(String nickName, String username, String email, String password) {
+        this.nickName = nickName;
         this.username = username;
         this.email = email;
         this.password = password;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getUsername() {
         return username;
@@ -72,14 +65,6 @@ public class User extends DateAudit {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getEmail() {
@@ -98,14 +83,6 @@ public class User extends DateAudit {
         this.password = password;
     }
 
-    public String getSign() {
-        return sign;
-    }
-
-    public void setSign(String sign) {
-        this.sign = sign;
-    }
-
     public String getAvatar() {
         return avatar;
     }
@@ -122,11 +99,43 @@ public class User extends DateAudit {
         this.lineState = lineState;
     }
 
-    public Byte getGender() {
+    public String getGender() {
         return gender;
     }
 
-    public void setGender(Byte gender) {
+    public void setGender(String gender) {
         this.gender = gender;
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
+
+    public String getRealName() {
+        return realName;
+    }
+
+    public void setRealName(String realName) {
+        this.realName = realName;
+    }
+
+    public String getSignature() {
+        return signature;
+    }
+
+    public void setSignature(String signature) {
+        this.signature = signature;
+    }
+
+    public String getTelPhone() {
+        return telPhone;
+    }
+
+    public void setTelPhone(String telPhone) {
+        this.telPhone = telPhone;
     }
 }

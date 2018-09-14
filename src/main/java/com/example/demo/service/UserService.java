@@ -6,6 +6,7 @@ import com.example.demo.dao.repository.ChatMsgRepository;
 import com.example.demo.dao.repository.FriendRepository;
 import com.example.demo.dao.repository.GroupRepository;
 import com.example.demo.dao.repository.UserRepository;
+import com.example.demo.dto.ChatDTO;
 import com.example.demo.dto.FriendDTO;
 import com.example.demo.dto.GroupDTO;
 import com.example.demo.dto.UserDTO;
@@ -40,13 +41,13 @@ public class UserService {
         User user = userRepository.findByUsername(username);
         UserDTO userInfo = UserDTO.builder()
                 .id(user.getUsername())
-                .username(user.getName())
+                .username(user.getNickName())
                 .avatar(user.getAvatar())
-                .sign(user.getSign())
+                .sign(user.getSignature())
                 .status(user.getLineState())
                 .build();
-        List<Object[]> friends = friendRepository.getMyFriends(user.getId());
-        List<GroupDTO> groups = groupRepository.getUserGroup(user.getId());
+        List<Object[]> friends = friendRepository.getMyFriends(username);
+        List<GroupDTO> groups = groupRepository.getUserGroup(username);
         Map<String, List<Object[]>> collect = friends.stream().collect(Collectors.groupingBy(c -> c[0].toString()));
         List<UserDTO> list;
         List<FriendDTO> friendList = new ArrayList<>();
@@ -98,7 +99,7 @@ public class UserService {
      */
     public ModelMap updateSign(String username,String sign){
         User user = userRepository.findByUsername(username);
-        user.setSign(sign);
+        user.setSignature(sign);
         userRepository.save(user);
         return RestUtil.Success();
     }
@@ -107,11 +108,23 @@ public class UserService {
      * 获取聊天信息
      */
     public ModelMap getChatMsg(String sender,String receiver,String msgType){
-        List<ChatMsg> chatMsgList;
+        List<ChatDTO> chatMsgList = new ArrayList<>();
+        List<Object[]> objList;
         if("friend".equals(msgType)){
-            chatMsgList = chatMsgRepository.getFriendChatList(sender,receiver);
+            objList = chatMsgRepository.getFriendChatList(sender,receiver);
         }else{
-            chatMsgList = chatMsgRepository.getGroupChatList(receiver);
+            objList = chatMsgRepository.getGroupChatList(receiver);
+        }
+        ChatDTO chatDTO;
+        for(Object[] obj:objList){
+            chatDTO = ChatDTO.builder()
+                    .id(obj[0].toString())
+                    .username(obj[1].toString())
+                    .avatar(String.valueOf(obj[2]))
+                    .timestamp(((Date)obj[3]).getTime())
+                    .content(String.valueOf(obj[4]))
+                    .build();
+            chatMsgList.add(chatDTO);
         }
         return RestUtil.Success(chatMsgList);
     }

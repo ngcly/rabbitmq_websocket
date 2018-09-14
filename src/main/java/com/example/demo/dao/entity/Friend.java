@@ -12,7 +12,7 @@ public class Friend extends DateAudit {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long friendId;   //好友ID
+    private String username; //好友唯一用户名
 
     private Long subgroupId; //好友分组ID
 
@@ -26,12 +26,12 @@ public class Friend extends DateAudit {
         this.id = id;
     }
 
-    public Long getFriendId() {
-        return friendId;
+    public String getUsername() {
+        return username;
     }
 
-    public void setFriendId(Long friendId) {
-        this.friendId = friendId;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public Long getSubgroupId() {

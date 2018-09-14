@@ -12,7 +12,7 @@ public class Subgroup {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long userId;      //用户ID
+    private String username;  //用户名
 
     private String groupName; //好友分组名
 
@@ -26,12 +26,12 @@ public class Subgroup {
         this.id = id;
     }
 
-    public Long getUserId() {
-        return userId;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getGroupName() {

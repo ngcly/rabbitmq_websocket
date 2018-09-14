@@ -84,7 +84,7 @@ public class BackController {
            message = MessageDTO.builder().emit(MessageDTO.MessageType.chatMessage).data(map).build();
            messagingTemplate.convertAndSendToUser(modelMap.get("receiveId").toString(),"/topic/greeting",message);
            msg = MsgDTO.builder()
-                   .sender(map.get("username"))
+                   .sender(map.get("id"))
                    .receiver(modelMap.get("receiveId").toString())
                    .content(map.get("content"))
                    .type("friend")
@@ -95,7 +95,7 @@ public class BackController {
            message = MessageDTO.builder().emit(MessageDTO.MessageType.chatMessage).data(map).build();
            messagingTemplate.convertAndSend("/topic/"+map.get("id"),message);
            msg = MsgDTO.builder()
-                   .sender(map.get("username"))
+                   .sender(modelMap.get("sendId").toString())
                    .receiver(modelMap.get("receiveId").toString())
                    .content(map.get("content"))
                    .type("group")

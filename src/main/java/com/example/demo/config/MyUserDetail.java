@@ -9,15 +9,15 @@ import java.util.Collection;
 public class MyUserDetail extends User implements UserDetails {
     public MyUserDetail(User user) {
         if(user!=null){
-            this.setId(user.getId());
             this.setUsername(user.getUsername());
-            this.setName(user.getName());
+            this.setNickName(user.getNickName());
+            this.setRealName(user.getRealName());
             this.setPassword(user.getPassword());
             this.setGender(user.getGender());
             this.setAvatar(user.getAvatar());
             this.setEmail(user.getEmail());
             this.setLineState(user.getLineState());
-            this.setSign(user.getSign());
+            this.setSignature(user.getSignature());
         }
     }
 

@@ -53,8 +53,8 @@ public class UserController {
     /**
      * 获取聊天信息
      */
-    @GetMapping("/chatList/{id}/{type}")
-    public ModelMap getChatMsg(Principal principal,@PathVariable("id")String receiver,@PathVariable("type")String msgType){
+    @GetMapping("/chatList")
+    public ModelMap getChatMsg(Principal principal,@RequestParam("id") String receiver,@RequestParam("type") String msgType){
         return userService.getChatMsg(principal.getName(),receiver,msgType);
     }
 }
