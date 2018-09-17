@@ -50,20 +50,18 @@ layui.use(['layim', 'laypage'], function(){
   
   
   //开始请求聊天记录
-  var param =  location.search //获得URL参数。该窗口url会携带会话id和type，他们是你请求聊天记录的重要凭据
+  var param =  location.search; //获得URL参数。该窗口url会携带会话id和type，他们是你请求聊天记录的重要凭据
   
   //实际使用时，下述的res一般是通过Ajax获得，而此处仅仅只是演示数据格式
-  ,res = {};
+  // ,res = {};
   
-  console.log(param)
-  $.get('/user/chatList'+param,function(result){
-      console.log(result);
-      res = result;
+  // console.log(param)
+  $.get('/user/chatList'+param,function(res){
+      var html = laytpl(LAY_tpl.value).render({
+          data: res.data
+      });
+      $('#LAY_view').html(html);
   });
-  var html = laytpl(LAY_tpl.value).render({
-    data: res.data
-  });
-  $('#LAY_view').html(html);
   
 });
 </script>

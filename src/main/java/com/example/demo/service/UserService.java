@@ -6,10 +6,7 @@ import com.example.demo.dao.repository.ChatMsgRepository;
 import com.example.demo.dao.repository.FriendRepository;
 import com.example.demo.dao.repository.GroupRepository;
 import com.example.demo.dao.repository.UserRepository;
-import com.example.demo.dto.ChatDTO;
-import com.example.demo.dto.FriendDTO;
-import com.example.demo.dto.GroupDTO;
-import com.example.demo.dto.UserDTO;
+import com.example.demo.dto.*;
 import com.example.demo.util.RestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -105,7 +102,7 @@ public class UserService {
     }
 
     /**
-     * 获取聊天信息
+     * 获取聊天记录信息
      */
     public ModelMap getChatMsg(String sender,String receiver,String msgType){
         List<ChatDTO> chatMsgList = new ArrayList<>();
@@ -127,5 +124,26 @@ public class UserService {
             chatMsgList.add(chatDTO);
         }
         return RestUtil.Success(chatMsgList);
+    }
+
+    /**
+     * 推荐好友
+     */
+    public ModelMap findFriend(String username){
+        List<UserDTO> userDTOS = friendRepository.findFriendList(username);
+        return RestUtil.Success(userDTOS);
+    }
+
+    /**
+     * 查找朋友
+     */
+    public ModelMap searchFriend(String username,String type,String name){
+        if("friend".equals(type)){
+            List<UserDTO> userDTOS = friendRepository.searchFriends(username,"%"+name+"%");
+            return RestUtil.Success(userDTOS);
+        }else{
+            List<GroupInfoDTO> groupDTOS = groupRepository.searchGroup(username,"%"+name+"%");
+            return RestUtil.Success(groupDTOS);
+        }
     }
 }

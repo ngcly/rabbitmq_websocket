@@ -51,10 +51,27 @@ public class UserController {
     }
 
     /**
-     * 获取聊天信息
+     * 获取聊天记录
      */
     @GetMapping("/chatList")
     public ModelMap getChatMsg(Principal principal,@RequestParam("id") String receiver,@RequestParam("type") String msgType){
         return userService.getChatMsg(principal.getName(),receiver,msgType);
     }
+
+    /**
+     * 获取推荐好友信息
+     */
+    @GetMapping("/find")
+    public ModelMap findFriend(Principal principal){
+        return userService.findFriend(principal.getName());
+    }
+
+    /**
+     * 查找朋友
+     */
+    @GetMapping("/searchFriend")
+    public ModelMap searchFriend(Principal principal,@RequestParam("type")String type,@RequestParam("value")String name){
+        return userService.searchFriend(principal.getName(),type,name);
+    }
+
 }
