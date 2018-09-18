@@ -130,14 +130,20 @@
         }
         $('body').on('click', '.add', function () {//添加好友
             var othis = $(this), type = othis.data('type');
+            var tips;
+            if('friend'==type){
+                tips = '好友申请已发送，请等待对方确认';
+			}else{
+                tips = '申请已发送，请等待管理员确认';
+			}
             console.log(othis);
             //弹出添加好友框
             parent.layui.layim.add({
                 type: type
-                ,username:
-                ,avatar: '//tva1.sinaimg.cn/crop.0.0.720.720.180/005JKVuPjw8ers4osyzhaj30k00k075e.jpg'
+                ,username: ''
+                ,avatar: ''
                 ,submit: function(group, remark, index){
-                    layer.msg('好友申请已发送，请等待对方确认', {
+                    layer.msg(tips, {
                         icon: 1
                         ,shade: 0.5
                     }, function(){
