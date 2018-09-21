@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.service.MessageService;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,6 +14,8 @@ import java.security.Principal;
 public class UserController {
     @Autowired
     UserService userService;
+    @Autowired
+    MessageService messageService;
 
     /**
      * 获取聊天页面基础信息
@@ -73,5 +76,21 @@ public class UserController {
     public ModelMap searchFriend(Principal principal,@RequestParam("type")String type,@RequestParam("value")String name){
         return userService.searchFriend(principal.getName(),type,name);
     }
+
+    /**
+     * 获取未读系统信息条数
+     */
+    @GetMapping("/unreadNum")
+    public ModelMap getUnreadNum(Principal principal){
+        return messageService.getUnreadNum(principal.getName());
+    }
+
+    /**
+     * 获取系统信息
+     */
+
+    /**
+     * 将未读系统信息更新为已读
+     */
 
 }

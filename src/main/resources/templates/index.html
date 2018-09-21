@@ -156,7 +156,14 @@
         //监听layim建立就绪
         layim.on('ready', function(res){
             //console.log(res.mine);
-            // layim.msgbox(1); //模拟消息盒子有新消息，实际使用时，一般是动态获得
+            $.get('/user/unreadNum', {},function (result) {
+                if(result.code != 0){
+                    return layer.msg(result.msg);
+                }
+                if(result.data>0){
+                    layim.msgbox(result.data); //模拟消息盒子有新消息
+                }
+            });
             //构建右键菜单
             $(".layim-list-friend >li > ul > li").contextMenu({
                 width: 140, // width

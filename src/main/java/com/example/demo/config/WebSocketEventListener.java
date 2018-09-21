@@ -27,6 +27,7 @@ public class WebSocketEventListener {
     public void handleWebSocketConnectListener(SessionConnectedEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) headerAccessor.getHeader("simpUser");
+        //TODO 推送未读信息
 //        if(token.getName() != null) {
 //            messagingTemplate.convertAndSend("/topic/greeting",token.getName()+" 上线了");
 //        }

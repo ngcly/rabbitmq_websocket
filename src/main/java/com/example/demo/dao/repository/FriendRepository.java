@@ -31,7 +31,6 @@ public interface FriendRepository extends JpaRepository<Friend, Long> {
      * 查找朋友
      */
     @Query("SELECT new com.example.demo.dto.UserDTO(username,nickName,avatar,signature,lineState) FROM User WHERE " +
-            "(username LIKE :name OR nickName LIKE :name) and username<>:username AND username NOT IN" +
-            "(SELECT t2.username FROM Subgroup t1,Friend t2 WHERE t1.username=:username AND t1.id=t2.subgroupId)")
+            "(username LIKE :name OR nickName LIKE :name) and username<>:username")
     List<UserDTO> searchFriends(@Param("username")String username,@Param("name")String name);
 }
