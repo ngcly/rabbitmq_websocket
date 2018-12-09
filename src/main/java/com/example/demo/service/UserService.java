@@ -1,6 +1,5 @@
 package com.example.demo.service;
 
-import com.example.demo.dao.entity.ChatMsg;
 import com.example.demo.dao.entity.User;
 import com.example.demo.dao.repository.ChatMsgRepository;
 import com.example.demo.dao.repository.FriendRepository;
