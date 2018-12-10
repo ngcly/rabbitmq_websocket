@@ -2,9 +2,9 @@
 SpringBoot2.0 整合 RabbitMQ 消息队列示例  
 Spring WebSocket 使用 RabbitMQ 作为消息代理 启用 Stomp 完成简单的聊天功能。
 
-## 当前master版本主要为自己学习rabbitmq消息队列功能，大部分功能在代码中有写注释用法功能。  
+## 当前master分支主要为自己学习rabbitmq消息队列功能，大部分功能在代码中有写注释用法功能。  
 ## 当前master版用户登录用的是session机制，jwt机制请查看 jwt 分支。    
-## 若想查看聊天版 请将分支切换到 layIM
+## 若想查看聊天版 请将分支切换到 layIM，该分支专注于聊天，用了贤心大神的layIM.
   
   想自己本地运行的请执行以下几个步骤：
 1. 下载完该项目需执行根目录下的 chat.sql  
