@@ -30,7 +30,7 @@ spring:
   #数据源配置
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/test?useSSL=false&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/chat?useSSL=false&serverTimezone=UTC
     username: root
     password: 123456
 
@@ -94,7 +94,7 @@ spring:
   #redis 配置
   redis:
     host: localhost
-    password: m5user
+    password:
     port: 6379
 
   # HttpSession redis
