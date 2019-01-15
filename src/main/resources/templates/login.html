@@ -9,13 +9,13 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <link rel="stylesheet" href="/layui/css/layui.css" media="all" />
-    <style>
-        .login{ width:260px;padding: 20px;background-color:rgba(0,0,0,0.5);border-radius: 4px;position:absolute;left: 50%;top: 50%; margin:-150px 0 0 -150px;z-index:99;}
-        .login h1{ text-align:center; color:#fff; font-size:24px; margin-bottom:20px; }
-    </style>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/style-search.css" media="screen" type="text/css" />
 </head>
-<body style="background: url('/img/bg.jpg')">
-<div class="login">
+<!--<body style="background: url('/img/bg.jpg')">-->
+<canvas id="canvas" width="1280" height="1024"> 您的浏览器不支持canvas标签，请您更换浏览器 </canvas>
+<script src="/js/word.js"></script>
+<div id="d" class="webdesigntuts-workshop">
     <h1>后台管理登录</h1>
     <form class="layui-form" action="/login" method="post">
         <div class="layui-form-item">
