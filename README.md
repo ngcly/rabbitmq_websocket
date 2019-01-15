@@ -8,4 +8,8 @@ Spring WebSocket 使用 RabbitMQ 作为消息代理 启用 Stomp 完成简单的
 admin , anne , hehe , vip  四个用户  密码统一为：123456  
 目前暂未实现注册，添加好友，群功能，若想添加，请自行在数据库中添加或在代码中自行实现。  
 本项目仅供参考学习，需要有spring boot及spring security的部分基础，并非给小白装逼使用，见谅！
-### 项目截图如下：
+### 项目截图如下：  
+![chat](1.png)  
+![chat](2.png)
+![chat](3.png)  
+![chat](4.png)
