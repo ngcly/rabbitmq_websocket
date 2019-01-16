@@ -1,5 +1,6 @@
 package com.example.demo.config;
 
+import com.example.demo.util.RestCode;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
@@ -21,7 +22,15 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
                          AuthenticationException e) throws IOException, ServletException {
         response.setContentType("application/json;charset=utf-8");
         PrintWriter out = response.getWriter();
-        out.write("{\"code\":401,\"msg\":\"抱歉，请先登录认证！\"}");
+        RestCode restCode = RestCode.UNAUTHEN;
+        if("Full authentication is required to access this resource".equals(e.getMessage())){
+        }else if("Bad credentials".equals(e.getMessage())){
+            restCode = RestCode.USER_ERR;
+        }else if("User is disabled".equals(e.getMessage())){
+            restCode = RestCode.USER_DISABLE;
+        }
+        String url = "  登录地址： http://"+request.getServerName()+":"+request.getServerPort()+"/login";
+        out.write("{\"code\":"+restCode.code+",\"msg\":\""+restCode.msg+url+"\"}");
         out.flush();
         out.close();
     }

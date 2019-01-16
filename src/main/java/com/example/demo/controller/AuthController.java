@@ -8,7 +8,6 @@ import com.example.demo.dao.entity.RoleName;
 import com.example.demo.dao.entity.User;
 import com.example.demo.dao.repository.RoleRepository;
 import com.example.demo.dao.repository.UserRepository;
-import com.example.demo.dto.JwtAuthenticationResponse;
 import com.example.demo.dto.LoginRequest;
 import com.example.demo.dto.SignUpRequest;
 import com.example.demo.exception.AppException;
@@ -32,6 +31,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -58,7 +59,7 @@ public class AuthController {
      * @return
      */
     @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+    public ModelMap authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -70,7 +71,10 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String jwt = tokenProvider.generateToken(authentication);
-        return ResponseEntity.ok(RestUtil.Success(new JwtAuthenticationResponse(jwt)));
+        Map<String,String> map = new HashMap<>();
+        map.put("tokenType","Bearer");
+        map.put("accessToken",jwt);
+        return RestUtil.Success(map);
     }
 
     /**

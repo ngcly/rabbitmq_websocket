@@ -16,10 +16,9 @@ function setConnected(connected) {
 function connect() {
     var socket = new SockJS('/websocket-rabbitmq');
     stompClient = Stomp.over(socket);
-    var token1 = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNTMzMjgyODI0LCJleHAiOjE1MzM4ODc2MjR9.hNkFtADtFZ6iAi2oBWTzsFzXW-Vj6gP1yRNIYeU_i9f45svypVjuI9lD-WtXqPviXfcRvwcRy2G6EKkKpCNaCA';
-    var token2 = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwiaWF0IjoxNTMzMjg0NTU4LCJleHAiOjE1MzM4ODkzNTh9.QrVY7hSVAScXFSS42mZ-TsXzMgrswIfwvh00mWPzQHYYRD6WhJsCsX3GPxsHdUxcY8ZaK8vqTlcbFC64Ubdj6w';
+    var token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNTMzMjgyODI0LCJleHAiOjE1MzM4ODc2MjR9.hNkFtADtFZ6iAi2oBWTzsFzXW-Vj6gP1yRNIYeU_i9f45svypVjuI9lD-WtXqPviXfcRvwcRy2G6EKkKpCNaCA';
     var headers={
-        'Auth-Token':token2
+        'Auth-Token':$('#token').val()
     };
     stompClient.connect(headers, function (frame) {
     // stompClient.connect({}, function (frame) {
