@@ -435,7 +435,7 @@ CREATE TABLE `user` (
 
 insert  into `user`(`username`,`created_at`,`updated_at`,`avatar`,`email`,`gender`,`line_state`,`nick_name`,`password`,`real_name`,`signature`,`tel_phone`) values 
 
-('admin','2018-09-14 15:39:28','2018-09-14 15:39:30','https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=1402472998,1033961727&fm=58','123456@qq.com','男','online','无恙','$2a$04$a90t7tmpIjJl6Ic9PZTHgeJDqN4iRwk45s8AVmN10v9cZ3jYl0qk6','斯大林','随风飘扬去远方',NULL),
+('admin','2018-09-14 15:39:28','2018-09-14 15:39:30','https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=1402472998,1033961727&fm=58','123456@qq.com','男','online','无恙','$2a$04$9KSovkBDzr7HvBjH7Monm.nor.x/mjgo9c9/eG8IeZ2Uh8gMhykoC','斯大林','随风飘扬去远方',NULL),
 
 ('anne','2018-09-14 15:46:44','2018-09-14 15:46:42','https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=2957348567,3650956819&fm=27&gp=0.jpg','531228@qq.com','女','hide','安妮小萌','$2a$04$9KSovkBDzr7HvBjH7Monm.nor.x/mjgo9c9/eG8IeZ2Uh8gMhykoC','安以轩','世间小萌物，可欺不可凌',NULL),
 
