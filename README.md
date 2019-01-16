@@ -18,5 +18,6 @@ Spring WebSocket 使用 RabbitMQ 作为消息代理 启用 Stomp 完成简单的
 配置的三个用户名：Cly , Jack , Tom  密码统一为：123456  
 
 项目截图：  
+![chat](3.png)
 ![chat](1.png)  
 ![chat](2.png)

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>登录页</title>
+    <link rel="stylesheet" href="/webjars/layui/css/layui.css" media="all" />
+    <link rel="stylesheet" href="/css/index.css">
+</head>
+
+<body>
+<div class="header">
+    <div class="top_logo">聊天室</div>
+    <div class="form">
+        <form class="layui-form" action="/login" method="post">
+	       <span>
+	        <input class="layui-input" name="username" type="text" placeholder="账户：" autocomplete="off" required="" lay-verify="required">
+	        <input class="layui-input" name="password" type="password" placeholder="密码：" autocomplete="off" required="" lay-verify="required">
+	        <button lay-submit="" lay-filter="login" class="submit">登录</button>
+	       </span>
+        </form>
+    </div>
+    <div class="canvaszz"></div>
+    <canvas id="canvas" width="1920" height="968"></canvas>
+</div>
+<script src="/js/starry.js"></script>
+<script type="text/javascript" src="/webjars/layui/layui.js"></script>
+<script type="text/javascript">
+    layui.use(['element','form','layer'],function(){
+        $ = layui.jquery;
+        var form = layui.form,
+            layer = layui.layer;
+        form.on('submit(login)', function (data) {
+            var index = layer.load(0);
+            var headers = {};
+            headers['X-CSRF-TOKEN'] = "[[${_csrf.token}]]";
+            $.ajax({
+                url:data.form.action,
+                type:data.form.method,
+                headers: headers,
+                data:data.field,//这是是要提交的参数
+                dataType:'json',
+                success:function(data){
+                    if(data.code == 200){
+                        layer.close(index);
+                        location.href="/";
+                    }else{
+                        layer.close(index);
+                        layer.msg(data.msg,{time:1000});
+                    }
+                }
+            });
+            return false;
+        });
+    });
+</script>
+
+
+</body>
+</html>

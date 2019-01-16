@@ -6,6 +6,9 @@ import org.springframework.messaging.handler.annotation.*;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.socket.config.WebSocketMessageBrokerStats;
 
 import java.security.Principal;
@@ -17,6 +20,16 @@ public class BackController {
     private SimpMessagingTemplate messagingTemplate;
     @Autowired
     WebSocketMessageBrokerStats webSocketMessageBrokerStats;
+
+    /**
+     * 登录页面
+     * @return login.html
+     */
+    @RequestMapping("/login")
+    public String login(@RequestParam(required = false)String error, Model model) {
+        model.addAttribute("error",error);
+        return "login";
+    }
 
     /**
      * 广播所有用户
