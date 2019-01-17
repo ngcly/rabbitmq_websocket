@@ -1,66 +1,168 @@
-html, body {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  font-family: 'Rubik Mono One', sans-serif;
-  background: #22292C;
+/*
+ *
+ * Template Name: Fullscreen Login
+ * Description: Login Template with Fullscreen Background Slideshow
+ * Author: Anli Zaimi
+ * Author URI: http://azmind.com
+ *
+ */
+
+
+body {
+    background: #f8f8f8;
+    /*font-family: 'PT Sans', Helvetica, Arial, sans-serif;*/
+	font-family:"Microsoft YaHei",微软雅黑,"Microsoft JhengHei",华文细黑,STHeiti,MingLiu;
+    text-align: center;
+
 }
 
-svg {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  z-index: 1;
-}
-#d{
-	position: absolute;
-	text-align: center;
-	top: 30%;
-	  left: 50%;
-	  transform: translateX(-50%);
-	  width: 200px;
-	 
-}
-button{
-  z-index: 2;
-  height: 26px;
-  width: 100px;
-  box-shadow: 0px 0px 0px 1px #2868c8;
-	color: #fff;
-    font-size: 15px;
-    letter-spacing: 1px;
-    background: #3385ff;
-    border-bottom: 1px solid #2d78f4;
-    outline: medium;
-	border: 1px solid #2868c8;
+.page-container {
+    margin: 160px auto 0 auto;
+    color: #fff;
 }
 
-.input {
-  z-index: 2;
-  font-size: 20px;
-  font-family: helvetica, sans-serif;
-  background: none;
-  border: 1px solid #ddd;
-  color: #eee;
+.page-container h1 {
+    font-size: 30px;
+    font-weight: 700;
+    text-shadow: 0 1px 4px rgba(0,0,0,.2);
 }
 
-.text, .offscreen-text {
-  width: 100%;
-  top: 50%;
-  transform: translateY(-50%);
-  display: block;
-  position: absolute;
-  margin: 0;
+.page-container form {
+    position: relative;
+    width: 305px;
+    margin: 15px auto 0 auto;
+    text-align: center;
 }
 
-.offscreen-text {
-  text-align: center;
-  top: -9999px;
+.page-container input {
+    width: 270px;
+    height: 42px;
+	line-height:42px;
+    margin-top: 15px;
+    padding: 0 15px;
+    background: #2d2d2d; /* browsers that don't support rgba */
+    *background-color:transparent;
+    background: rgba(45,45,45,.15);
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    border-radius: 6px;
+    border: 1px solid #3d3d3d; /* browsers that don't support rgba */
+    border: 1px solid rgba(255,255,255,.15);
+    -moz-box-shadow: 0 2px 3px 0 rgba(0,0,0,.1) inset;
+    -webkit-box-shadow: 0 2px 3px 0 rgba(0,0,0,.1) inset;
+    box-shadow: 0 2px 3px 0 rgba(0,0,0,.1) inset;
+    font-family: 'PT Sans', Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0,0,0,.1);
+    -o-transition: all .2s;
+    -moz-transition: all .2s;
+    -webkit-transition: all .2s;
+    -ms-transition: all .2s;
 }
 
-.text span {
-  position: absolute;
+input:-moz-placeholder { color: #fff; }
+input:-ms-input-placeholder { color: #fff; }
+input::-webkit-input-placeholder { color: #fff; }
+
+.page-container input:focus {
+    outline: none;
+    -moz-box-shadow:
+        0 2px 3px 0 rgba(0,0,0,.1) inset,
+        0 2px 7px 0 rgba(0,0,0,.2);
+    -webkit-box-shadow:
+        0 2px 3px 0 rgba(0,0,0,.1) inset,
+        0 2px 7px 0 rgba(0,0,0,.2);
+    box-shadow:
+        0 2px 3px 0 rgba(0,0,0,.1) inset,
+        0 2px 7px 0 rgba(0,0,0,.2);
 }
+
+.page-container button {
+    cursor: pointer;
+    width: 300px;
+    height: 44px;
+    margin-top: 15px;
+    padding: 0;
+    background: #9bb7ef;
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    border-radius: 6px;
+    border: 0px;
+    -moz-box-shadow:
+        0 15px 30px 0 rgba(255,255,255,.25) inset,
+        0 2px 7px 0 rgba(0,0,0,.2);
+    -webkit-box-shadow:
+        0 15px 30px 0 rgba(255,255,255,.25) inset,
+        0 2px 7px 0 rgba(0,0,0,.2);
+    box-shadow:
+        0 15px 30px 0 rgba(255,255,255,.25) inset,
+        0 2px 7px 0 rgba(0,0,0,.2);
+    font-family: 'PT Sans', Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: #bafffd;
+    text-shadow: 0 1px 2px rgba(0,0,0,.1);
+    -o-transition: all .2s;
+    -moz-transition: all .2s;
+    -webkit-transition: all .2s;
+    -ms-transition: all .2s;
+}
+
+.page-container button:hover {
+    -moz-box-shadow:
+        0 15px 30px 0 rgba(255,255,255,.15) inset,
+        0 2px 7px 0 rgba(0,0,0,.2);
+    -webkit-box-shadow:
+        0 15px 30px 0 rgba(255,255,255,.15) inset,
+        0 2px 7px 0 rgba(0,0,0,.2);
+    box-shadow:
+        0 15px 30px 0 rgba(255,255,255,.15) inset,
+        0 2px 7px 0 rgba(0,0,0,.2);
+}
+
+.page-container button:active {
+    -moz-box-shadow:
+        0 15px 30px 0 rgba(255,255,255,.15) inset,
+        0 2px 7px 0 rgba(0,0,0,.2);
+    -webkit-box-shadow:
+        0 15px 30px 0 rgba(255,255,255,.15) inset,
+        0 2px 7px 0 rgba(0,0,0,.2);
+    box-shadow:        
+        0 5px 8px 0 rgba(0,0,0,.1) inset,
+        0 1px 4px 0 rgba(0,0,0,.1);
+
+    border: 0px solid #7aeaef;
+}
+
+.connect {
+    width: 800px;
+    margin: 35px auto 0 auto;
+    font-size: 14px;
+    
+    text-shadow: 0 1px 3px rgba(0,0,0,.2);
+}
+.connect p{
+    /*position:relative;*/
+	left:-140%;
+	top:0
+}
+.connect a {
+    display: inline-block;
+    width: 32px;
+    height: 35px;
+    margin-top: 15px;
+    -o-transition: all .2s;
+    -moz-transition: all .2s;
+    -webkit-transition: all .2s;
+    -ms-transition: all .2s;
+}
+
+/*
+.connect a.facebook { background: url(../img/facebook.png) center center no-repeat; }
+.connect a.twitter { background: url(../img/twitter.png) center center no-repeat; }
+
+.connect a:hover { background-position: center bottom; }
+*/
+
 
