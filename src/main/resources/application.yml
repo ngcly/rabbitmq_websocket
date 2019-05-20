@@ -107,8 +107,8 @@ spring:
   # 邮箱配置
   mail:
     host: smtp.qq.com
-    username: 531237716@qq.com
-    password: ddlsiwxcbhbtcahi
+    username: 
+    password: 
 
   # 开启浏览器静态资源缓存
   resources:
